@@ -1,0 +1,69 @@
+.mini-submenu{
+    display:block;  
+    background-color: white;  
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 9px;  
+    width: 42px;
+    z-index: 1;
+    position: absolute;
+    margin-bottom: 20px;
+}
+
+.mini-submenu:hover{
+    cursor: pointer;
+}
+
+.mini-submenu .icon-bar {
+    border-radius: 1px;
+    display: block;
+    height: 2px;
+    width: 22px;
+    margin-top: 3px;
+}
+
+.mini-submenu .icon-bar {
+    background-color: black;
+}
+
+#slide-submenu{
+    display: inline-block;
+    padding: 0 8px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pull-right{
+    background-color: #ADADAD;
+    color: white;
+}
+
+.pull-right:hover{
+    background-color: #CCCCCC;
+    color: white;
+}
+
+.list-group{
+    position: absolute;
+    min-width: 270px;
+    z-index: 1;
+}
+
+.col-xs-12 {
+    width: 250%;
+}
+
+/* Quand on passe en mode mobile, on change les propriétés suivantes */
+@media (max-width: 767px) {
+    .list-group{
+        position: relative;
+    }
+
+    .mini-submenu{
+        position: relative;
+    }
+
+    .col-xs-12 {
+        width: 100%;
+    }
+}
