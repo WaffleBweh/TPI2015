@@ -6,7 +6,7 @@
   Classe: 	I.IN-P4B
   Date:		30/04/2015
   Version:	0.1
-  Description:    Script regroupant les fonctions spécifiques au site web et la base de donnée
+  Description:  Script regroupant les fonctions spécifiques au site web et la base de donnée
  */
 
 session_start();

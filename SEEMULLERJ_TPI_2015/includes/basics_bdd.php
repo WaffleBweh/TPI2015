@@ -108,6 +108,25 @@ function getAllFields($table) {
     return $data;
 }
 
+/** getAllFieldsCondition
+ * Cette fonction retourne tous les enregistrements de la table passée en paramètre avec une condition
+ * @param string $table
+ * @param string $condition
+ * @return PDO::FETCH_OBJ
+ */
+function getAllFieldsCondition($table, $condition) {
+    $dbc = connection();
+    $dbc->quote($table);
+    $dbc->quote($condition);
+    $req = "SELECT * FROM $table $condition";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+    return $data;
+}
+
 /** getPaginationQuerry
  * Retourne la liste des enregistrement d'une page donnée en paramètre selon la 
  * requette egalement passée en parametre 
@@ -173,29 +192,3 @@ function deleteFieldById($id, $table) {
     $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
 }
-
-/*=========================WORK IN PROGRESS============================
-/** updateFieldById
- * Cette fonction met à jour un enregistrement de la table donnée en paramètre grâce à 
- * l'id donnée en paramètre et les données passées en paramètre sous la forme 
- * d'un tableau assiocatif avec comme clé les noms des champs exact dans la base de donnée.
- * @param Integer $id
- * @param String $table
- * @param Array $data
- *//*
-function updateFieldById($id, $table, $data) {
-    $dbc= connection();
-    $req = "UPDATE images SET "
-	$nbRow=count($data);
-	foreach ($data as $key => $value){
-		if ($nbRow-1 ==)
-		$req .= "$key=$value,";
-		
-	}
-	$req .= " WHERE id=$id";
-    // preparation de la requete
-    $requPrep = $dbc->prepare($req); // on prépare notre requête
-    $requPrep->execute();
-    
-}
-*/

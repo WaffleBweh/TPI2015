@@ -1,7 +1,8 @@
 <?php
 require_once '../includes/specific_funtions.php';
 
-debug(hashPerso('SuperAdmin'));
+//Affichage du hash
+debug(hashPerso('SuperUser'));
 
 if (filter_input(INPUT_POST, 'login')) {
     $pseudo = filter_input(INPUT_POST, 'username');

@@ -1,5 +1,6 @@
 <?php
 require_once 'includes/specific_funtions.php';
+require_once './includes/struct.php';
 
 //Connexion utilisateur
 if (filter_input(INPUT_POST, 'login')) {
@@ -23,33 +24,9 @@ if (filter_input(INPUT_POST, 'login')) {
     </head>
     <body>
         <!-- NAVBAR -->
-        <nav class="navbar navbar-default navbar-static-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="maquette.html">Catal'info</a>
-                </div>
-
-                <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
-                    <form class="navbar-form navbar-left">
-                        <div class="input-group col-xs-12">
-                            <input type="text" class="form-control" placeholder="Rechercher...">
-                            <span class="input-group-btn">
-                                <button class="btn btn-success" type="button"><span class="glyphicon glyphicon-search"></span></button>
-                            </span>
-                        </div>
-                    </form>
-                    <form class="navbar-form navbar-right" role="form">
-                        <button name="login" type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">Connexion  <span class="glyphicon glyphicon-log-in"></span></button>
-                    </form>
-                </div>
-            </div>
-        </nav>
+        <?php
+        getHeader();
+        ?>
         <div class="left">
             <div class="col-sm-2 col-md-2">
                 <div class="mini-submenu">
@@ -88,141 +65,22 @@ if (filter_input(INPUT_POST, 'login')) {
             <div class="container-fluid">
                 <!-- CONTAINER PANELS PRODUITS LES PLUS VUS-->
                 <div class="row well">
-                    <h1><span class="glyphicon glyphicon-fire"></span> Les plus vus</h1>
+                    <h1><span class="glyphicon glyphicon-fire"></span> Produits les plus vus</h1>
                     <hr/>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!--INSERTION DES PRODUITS LES PLUS VU-->
+                    <?php
+                    echo structMostViewedProducts();
+                    ?>
+
                 </div>
                 <!-- CONTAINER PANELS PRODUITS LES RECOMMANDES -->
                 <div class="row well">
-                    <h1><span class="glyphicon glyphicon-tags"></span> Recommandé</h1>
+                    <h1><span class="glyphicon glyphicon-tags"></span> Produits recommandés</h1>
                     <hr/>
-                    <div class="col-sm-3">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <h3 class="panel-title" style="text-align: center">Nom du produit</h3>
-                            </div>
-                            <div class="panel-body">
-                                <img class="img-thumbnail center-block" alt="thumbnail" src="./img/placeholder.png" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;">
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        Short description...
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <!--INSERTION DES PRODUITS RECOMMENDES-->
+                    <?php
+                    echo structRecommendedProducts();
+                    ?>
                 </div>
             </div>
         </div>
