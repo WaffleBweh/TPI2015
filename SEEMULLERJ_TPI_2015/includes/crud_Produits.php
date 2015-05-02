@@ -6,7 +6,7 @@
   Classe: 	I.IN-P4B
   Date:		25/11/2014
   Version:	1
-  Description:    Script contenant les fonctions en relation avec le crud animal
+  Description:    Script contenant les fonctions en relation avec le crud products
   (create, read, update, delete)
  */
 

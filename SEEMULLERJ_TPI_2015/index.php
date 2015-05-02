@@ -41,21 +41,9 @@ if (filter_input(INPUT_POST, 'login')) {
                             <span class="glyphicon glyphicon-chevron-left"></span>
                         </span>
                     </h4>
-                    <a href="#" class="list-group-item">
-                        Lorem ipsum
-                    </a>
-                    <a href="#" class="list-group-item">
-                        Lorem ipsum
-                    </a>
-                    <a href="#" class="list-group-item">
-                        Lorem ipsum
-                    </a>
-                    <a href="#" class="list-group-item">
-                        Lorem ipsum
-                    </a>
-                    <a href="#" class="list-group-item">
-                        Lorem ipsum
-                    </a>
+                    <?php
+                    echo structKeywordsList();
+                    ?>
                 </div>        
             </div>
         </div>

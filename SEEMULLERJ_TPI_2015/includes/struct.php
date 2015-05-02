@@ -10,6 +10,7 @@
  */
 require_once 'specific_funtions.php';
 require_once 'crud_Produits.php';
+require_once 'crud_Keywords.php';
 
 function getHeader() {
     //On affiche différents headers en fonction de la personne qui est connectée
@@ -80,6 +81,20 @@ function structMostViewedProducts() {
                             </div>
                         </div>
                     </div>';
+    }
+
+    return $str;
+}
+
+function structKeywordsList() {
+    $keywords = getAllKeywords();
+    $str = '';
+
+    //On crée un panel pour chaque animaux de la page
+    foreach ($keywords as $keyword) {
+        $str.= '<a href="#" class="list-group-item">
+                        '. $keyword->name .'
+                    </a>';
     }
 
     return $str;
