@@ -11,11 +11,10 @@
  */
 
 require_once 'basics_bdd.php';
-$table = 'keywords';
 
 
 function getAllKeywords(){    
-    global $table;
+    $table = 'keywords';
     
     return getAllFields($table);
 }
