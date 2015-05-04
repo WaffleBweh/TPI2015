@@ -11,10 +11,15 @@
  */
 
 require_once 'basics_bdd.php';
+$tableKeywords = 'keywords';
 
-
+/** getAllKeywords
+ * Renvoie le contenu de la table "keywords"
+ * @global string $tableKeywords
+ * @return type
+ */
 function getAllKeywords(){    
-    $table = 'keywords';
+    global $tableKeywords;
     
-    return getAllFields($table);
+    return getAllFields($tableKeywords);
 }

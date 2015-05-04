@@ -50,7 +50,11 @@
 }
 
 .col-xs-12 {
-    width: 250%;
+    width: 225%;
+}
+
+.carousel-indicators li{
+    border-radius: 0;
 }
 
 /* Quand on passe en mode mobile, on change les propriétés suivantes */

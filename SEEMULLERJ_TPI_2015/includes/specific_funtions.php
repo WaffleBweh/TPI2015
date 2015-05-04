@@ -12,10 +12,18 @@
 session_start();
 require_once 'crud_User.php';
 
+/** isAdmin
+ * Verifie si l'utilisateur est un administrateur
+ * @return type
+ */
 function isAdmin() {
     return ($_SESSION['admin']);
 }
 
+/** isConnected
+ * Verifie si l'utilisateur est connecté
+ * @return type
+ */
 function isConnected() {
     return (isset($_SESSION['id']));
 }
@@ -25,15 +33,23 @@ function isConnected() {
  * @param string $value
  * @return string
  */
-
 function hashPerso($password) {
     return sha1(md5($password));
 }
 
+/** checkImageType
+ * Vérifie le type de l'image
+ * @param type $fileType
+ * @return type
+ */
 function checkImageType($fileType) {
     return in_array($fileType, unserialize(ALLOWED_IMAGE_TYPES));
 }
 
+/** debug
+ * Debug de la variable donnée en paramètre
+ * @param type $sObj
+ */
 function debug($sObj = NULL) {
     echo '<pre>';
     if (is_null($sObj)) {
