@@ -23,3 +23,10 @@ function getAllKeywords(){
     
     return getAllFields($tableKeywords);
 }
+
+function getAllKeywordsSorted(){    
+    global $tableKeywords;
+    $condition = 'ORDER BY name';
+    
+    return getAllFieldsCondition($tableKeywords, $condition);
+}

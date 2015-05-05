@@ -57,6 +57,18 @@
     border-radius: 0;
 }
 
+.carousel-inner{
+    max-height: 250px;
+}
+
+.red{
+    color: #FF6961;
+}
+
+.green{
+    color: #23BA7E;
+}
+
 /* Quand on passe en mode mobile, on change les propriétés suivantes */
 @media (max-width: 767px) {
     .list-group{

@@ -51,6 +51,17 @@ function getProductById($id) {
     return getFieldById($id, $tableProducts);
 }
 
+/** getProductByIdCondition
+ * Retourne un produit selon un id et une condition passé en parametre
+ * @global string $tableProducts
+ * @param type $id
+ * @return PDO::FETCH_OBJ
+ */
+function getProductByIdCondition($id, $condition) {
+    global $tableProducts;
+    return getFieldByIdCondition($id, $tableProducts, $condition);
+}
+
 /** deleteProductById
  * Supprime un produit dans la base de donnée selon un id passé en parametre
  * @global string $tableProducts
@@ -69,11 +80,28 @@ function deleteProductById($id) {
  */
 function getRecommendedProducts() {
     global $tableProducts;
-    global $recommendedC;
 
-    $condition = $recommendedC . ' and NOW() > `availability_date` and NOW() < `expiration_date`';
+    $dbc = connection();
+    $dbc->quote($tableProducts);
 
-    return getAllFieldsCondition($tableProducts, $condition);
+    $req = 'SELECT DISTINCT p.id AS idProduct, p.title as productTitle,  p.short_desc, MIN(m.src) AS mediaSource,'
+            . ' m.isImage, p.view_count, p.is_frontpage '
+            . 'FROM products AS p '
+            . 'INNER JOIN products_has_medias AS pm ON p.id = pm.id_products '
+            . 'INNER JOIN medias AS m ON pm.id_medias = m.id '
+            . 'WHERE m.isImage = 1 '
+            . 'AND is_frontpage=true '
+            . 'AND NOW() > availability_date '
+            . 'AND NOW() < expiration_date '
+            . 'GROUP BY p.title '
+            . 'ORDER BY p.title ASC ';
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
 }
 
 /** getMostViewedProducts
@@ -84,8 +112,129 @@ function getRecommendedProducts() {
  */
 function getMostViewedProducts($nbProductsShown) {
     global $tableProducts;
-    
-    $condition = 'WHERE NOW() > availability_date and NOW() < expiration_date ORDER BY view_count DESC LIMIT ' . $nbProductsShown;
 
-    return getAllFieldsCondition($tableProducts, $condition);
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+
+    //On récupère les produits les plus vus si ils n'ont pas expiré
+    //On récupère aussi les liens vers leurs images et on les organise par leur nombre de vues
+    $req = 'SELECT DISTINCT p.id AS idProduct, p.title as productTitle,  p.short_desc, MIN(m.src) AS mediaSource,'
+            . ' m.isImage, p.view_count, p.is_frontpage '
+            . 'FROM products AS p '
+            . 'INNER JOIN products_has_medias AS pm ON p.id = pm.id_products '
+            . 'INNER JOIN medias AS m ON pm.id_medias = m.id '
+            . 'WHERE m.isImage = 1 '
+            . 'AND NOW() > availability_date '
+            . 'AND NOW() < expiration_date '
+            . 'GROUP BY p.title '
+            . 'ORDER BY view_count DESC '
+            . 'LIMIT ' . $nbProductsShown;
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
+}
+
+/** getProductDetails
+ * Renvoie la liste des produits et leur marques associées
+ * @global string $tableProducts
+ * @return type
+ */
+function getProductDetails() {
+    global $tableProducts;
+
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    //On récupère les produits les plus vus si ils n'ont pas expiré
+    //On récupère aussi les liens vers leurs images et on les organise par leur nom
+    $req = "SELECT p.id AS idProduit, p.title, p.short_desc, p.long_desc, p.is_frontpage,"
+            . " p.availability_date, p.expiration_date, p.view_count, p.id_brand, b.id AS idBrand,"
+            . " b.name AS brandName, (NOW() < availability_date OR NOW() > expiration_date) AS isExpired"
+            . " FROM $tableProducts AS p"
+            . " INNER JOIN brands as b ON p.id_brand = b.id";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
+}
+
+/** getProductDetailsById
+ * Renvoie un produit par son id et les informations concernant sa marque 
+ * @global string $tableProducts
+ * @param type $id
+ * @return type
+ */
+function getProductDetailsById($id) {
+    global $tableProducts;
+
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    $req = "SELECT p.id AS idProduit, p.title, p.short_desc, p.long_desc, p.is_frontpage,"
+            . " p.availability_date, p.expiration_date, p.view_count, p.id_brand, b.id AS idBrand,"
+            . " b.name AS brandName, (NOW() < availability_date OR NOW() > expiration_date) AS isExpired"
+            . " FROM $tableProducts AS p"
+            . " INNER JOIN brands as b ON p.id_brand = b.id"
+            . " WHERE p.id = $id";
+
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetch(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
+}
+
+/** getProductMedias
+ * Renvoie la liste de tous les produits avec leurs médias associés
+ * @global string $tableProducts
+ * @return type
+ */
+function getProductMedias() {
+    global $tableProducts;
+
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    $req = "SELECT p.id AS idProduit, p.title as productTitle, m.src AS mediaSource,m.isImage "
+            . "FROM $tableProducts AS p "
+            . "INNER JOIN products_has_medias AS pm ON p.id = pm.id_products "
+            . "INNER JOIN medias AS m ON pm.id_medias = m.id";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
+}
+
+/** getProductMediasById
+ * Renvoie un produit et ses médias associés en dépendant de son ID
+ * @global string $tableProducts
+ * @param type $id
+ * @return type
+ */
+function getProductMediasById($id) {
+    global $tableProducts;
+
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    $req = "SELECT p.id AS idProduit, p.title as productTitle, m.src AS mediaSource, m.isImage "
+            . "FROM $tableProducts AS p "
+            . "INNER JOIN products_has_medias AS pm ON p.id = pm.id_products "
+            . "INNER JOIN medias AS m ON pm.id_medias = m.id "
+            . "WHERE p.id = $id";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
 }

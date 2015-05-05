@@ -33,6 +33,7 @@ function isConnected() {
  * @param string $value
  * @return string
  */
+
 function hashPerso($password) {
     return sha1(md5($password));
 }
@@ -44,6 +45,19 @@ function hashPerso($password) {
  */
 function checkImageType($fileType) {
     return in_array($fileType, unserialize(ALLOWED_IMAGE_TYPES));
+}
+
+function isImage($string) {
+    $result = false;
+
+    if ((strpos($string, '.jpg') !== false) ||
+            (strpos($string, '.jpeg') !== false) ||
+            (strpos($string, '.png') !== false) ||
+            (strpos($string, '.gif') !== false)) {
+        $result = true;
+    }
+
+    return "$result";
 }
 
 /** debug

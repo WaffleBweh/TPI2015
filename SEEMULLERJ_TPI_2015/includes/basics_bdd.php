@@ -91,6 +91,25 @@ function getFieldById($id, $table) {
     return $requPrep->fetch(PDO::FETCH_OBJ);
 }
 
+/** getFieldByIdCondition
+ * Cette fonction récupère un enregistrement de la table donnée en paramètre grâce à 
+ * l'id également donnée en paramètre et une condition
+ * @param Integer $id
+ * @param String $table
+ * @return PDO::FETCH_OBJ
+ */
+function getFieldByIdCondition($id, $table, $condition) {
+    $dbc = connection();
+    $dbc->quote($table);
+    $req = "SELECT * FROM $table WHERE id=:id $condition";
+    // preparation de la requete
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->bindParam(':id', $id, PDO::PARAM_INT);
+    $requPrep->execute();
+
+    return $requPrep->fetch(PDO::FETCH_OBJ);
+}
+
 /** getAllFields
  * Cette fonction retourne tous les enregistrements de la table passée en paramètre
  * @param String $table
