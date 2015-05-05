@@ -36,22 +36,24 @@ function structRecommendedProducts() {
 
 //On crée un panel pour chaque produits de la page
     foreach ($products as $product) {
-        $str.= '<div class="col-sm-4">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <a href="detail.php?id=' . $product->idProduct . '"><h3 class="panel-title" style="text-align: center">' . $product->productTitle . '</h3></a>
+        $str.= '<div class="col-md-3">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <a href="detail.php?id=' . $product->idProduct . '"><h3 class="panel-title" style="text-align: center">' . $product->productTitle . '</h3></a>
+                        </div>
+                        <div class="panel-body">
+                            <div class="product-container thumbnail">
+                                <a href="detail.php?id=' . $product->idProduct . '"><img class="img-responsive thumbnail" alt="thumbnail" src="' . $product->mediaSource . '" data-holder-rendered="true"></a>                            
                             </div>
-                            <div class="panel-body">
-                            <a href="detail.php?id=' . $product->idProduct . '"><img class="img-thumbnail center-block" alt="thumbnail" src="' . $product->mediaSource . '" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;"></a>
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        ' . $product->short_desc . '
-                                    </p>
-                                </div>
+                            <hr/>
+                            <div class="panel-footer" style="float: left;">
+                                <p>
+                                    ' . $product->short_desc . '
+                                </p>
                             </div>
                         </div>
-                    </div>';
+                    </div>
+                </div>';
     }
 
     return $str;
@@ -63,29 +65,30 @@ function structRecommendedProducts() {
  */
 function structMostViewedProducts() {
     $products = getMostViewedProducts(NUMBER_OF_TOP_PRODUCTS);
-    $medias = getProductMedias();
     $str = '';
 
     //On crée un panel pour chaque produits de la page
     foreach ($products as $product) {
-        $str.= '<div class="col-sm-4">
-                        <div class="panel panel-success">
-                            <div class="panel-heading">
-                                <a href="detail.php?id=' . $product->idProduct . '"><h3 class="panel-title" style="text-align: center">' . $product->productTitle . ' - ' . $product->view_count . ' <span class="glyphicon glyphicon-eye-open"></span></h3></a>
+        $str.= '<div class="col-md-3">
+                    <div class="panel panel-success">
+                        <div class="panel-heading">
+                            <a href="detail.php?id=' . $product->idProduct . '"><h3 class="panel-title" style="text-align: center">' . $product->productTitle . '</h3></a>
+                        </div>
+                        <div class="panel-body">
+                            <div class="product-container thumbnail">
+                                <a href="detail.php?id=' . $product->idProduct . '"><img class="thumbnail img-responsive" alt="thumbnail" src="' . $product->mediaSource . '" data-holder-rendered="true"></a>                            
                             </div>
-                            <div class="panel-body">
-                                <a href="detail.php?id=' . $product->idProduct . '"><img class="img-thumbnail center-block" alt="thumbnail" src="' . $product->mediaSource . '" data-holder-rendered="true" style="width: 200px; height: 200px; margin: auto;"></a>
-                                <hr/>
-                                <div class="text-info" style="float: left;">
-                                    <p>
-                                        ' . $product->short_desc . '
-                                    </p>
-                                </div>
+                            <hr/>
+                            <div class="panel-footer" style="float: left;">
+                                <p>
+                                    ' . $product->short_desc . '
+                                </p>
                             </div>
                         </div>
-                    </div>';
+                    </div>
+                </div>';
     }
-    
+
     return $str;
 }
 
@@ -99,22 +102,29 @@ function structKeywordsList() {
 //On crée un panel pour chaque animaux de la page
     foreach ($keywords as $keyword) {
         $str.= '<a href="#" class="list-group-item">
-                        ' . $keyword->name . '
+                        ' . strtoupper($keyword->name) . '
                     </a>';
     }
 
     return $str;
 }
 
+/** structDetailProduct
+ * Structure le détail d'un produit grace à son id
+ * @param type $id
+ * @return string
+ */
 function structDetailProduct($id) {
     $product = getProductDetailsById($id);
     $medias = getProductMediasById($id);
 
     $carouselIndicators = '';
+    $carouselControls = '';
     $imagesProduct = '';
+    $otherMedia = '';
     $i = 0;
     $j = 0;
-    
+
     foreach ($medias as $media) {
         if ($media->isImage) {
             $i++;
@@ -131,18 +141,57 @@ function structDetailProduct($id) {
         $i = 0;
         foreach ($arrayImage as $image) {
             if ($i == 0) {
-                $carouselIndicators .= '<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>';
-                $imagesProduct .= '<div class="item active"><img data-src="" alt="" src="' . $image . '"></div>';
-                $i = 1;
+                $carouselIndicators .= '<li data-target="#carousel-example-generic" data-slide-to="' . $i . '" class="active"></li>';
+                $imagesProduct .= '<div class="item thumbnail active"><img class="thumbnail" data-src="" alt="" src="' . $image . '"></div>';
             } else {
-                $carouselIndicators .= '<li data-target="#carousel-example-generic" data-slide-to="0" class=""></li>';
-                $imagesProduct .= '<div class="item"><img data-src="" alt="" src="' . $image . '"></div>';
+                $carouselIndicators .= '<li data-target="#carousel-example-generic" data-slide-to="' . $i . '" class=""></li>';
+                $imagesProduct .= '<div class="item thumbnail"><img class="thumbnail" data-src="" alt="" src="' . $image . '"></div>';
             }
+            $i++;
+        }
+
+        //On affiche les controls si il y a plus d'une image
+        if (count($arrayImage) > 1) {
+            $carouselControls = '<a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                                <span class="sr-only">Next</span>
+                            </a>';
+        } else {
+            //Si il n'y a qu'un produit, on retire les indicateurs
+            $carouselIndicators = '';
         }
     }
     //Si le produit n'as pas d'image, on affiche un placeholder
     else {
         $imagesProduct .= '<div class="item active"><img data-src="" alt="" src="up-content/img/placeholder.png"></div>';
+    }
+
+    //Pour chaque image de produits, on ajoute un media dans la liste des téléchargements
+    if (isset($arrayOthers)) {
+        foreach ($arrayOthers as $other) {
+            //On crée le nom du fichier en soustrayant la longeur de l'arborescance au chemin complet
+            $filename = substr($other, strlen(CONTENT_UPLOAD . OTHER_FOLDER));
+            $otherMedia .= '<li class="media">
+                                <div class="media-left">
+                                    <a href="#">
+                                        <img class="media-object" alt="pdf_file" src="img/pdf.png" data-holder-rendered="true" style="width: 32px; height: 32px;">
+                                    </a>
+                                </div>
+                                <div class="media-body" style="margin: 10px;">
+                                    <h4 class="media-heading" id="media-heading"><a href="#">' . $filename . '</a><a class="anchorjs-link" href="#media-heading"><span class="anchorjs-icon"></span></a></h4>
+                                </div>
+                            </li>';
+        }
+    } else {
+        $arrayOthers = NULL;
+    }
+    
+    if (is_null($arrayOthers)) {
+        $otherMedia = '<h4 class="red"><span class="glyphicon glyphicon-remove-sign"></span><i> Pas de fichiers actuellement disponible pour ce produit</i></h4>';
     }
 
     //On regarde si le produit est expiré et on affiche à l'utilisateur l'information
@@ -153,7 +202,7 @@ function structDetailProduct($id) {
     }
 
     $str = '<div class="row well">
-                    <h1>' . strtoupper($product->brandName) . ' - ' . $product->title . '</h1>
+                    <h1><span class="glyphicon glyphicon-search"></span> ' . strtoupper($product->brandName) . ' - ' . $product->title . '</h1>
                     <hr>
                     <div class="col-sm-5">
                         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
@@ -163,14 +212,7 @@ function structDetailProduct($id) {
                             <div class="carousel-inner" role="listbox">
                                 ' . $imagesProduct . '
                             </div>
-                            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                                <span class="sr-only">Next</span>
-                            </a>
+                            ' . $carouselControls . '
                         </div>
                     </div> 
                     <hr/>
@@ -179,7 +221,17 @@ function structDetailProduct($id) {
                         <p>' . $product->long_desc . '</p> 
                             ' . $expiredText . '
                     </div> 
-                </div>';
+                </div>
+                <div class="row well">
+                    <h1><span class="glyphicon glyphicon-download"></span> Fichiers téléchargeables</h1>
+                    <hr>
+                    <div class="media">
+                        <ul class="media-list">
+                            ' . $otherMedia . '
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">';
     return $str;
 }
 

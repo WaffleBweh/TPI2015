@@ -12,8 +12,8 @@ if (filter_input(INPUT_POST, 'login')) {
 ?>
 <!DOCTYPE html>
 <html lang="en"><head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="">
         <meta name="author" content="">
@@ -46,11 +46,8 @@ if (filter_input(INPUT_POST, 'login')) {
                     ?>
                 </div>        
             </div>
-        </div>
-
-        <!-- CONTAINER -->
-        <div class="container">
-            <div class="container-fluid">
+            <!-- CONTAINER -->
+            <div class="container">
                 <!-- CONTAINER PANELS PRODUITS LES PLUS VUS-->
                 <div class="row well">
                     <h1><span class="glyphicon glyphicon-fire"></span> Produits les plus vus</h1>
@@ -94,7 +91,6 @@ if (filter_input(INPUT_POST, 'login')) {
                 </div>
             </div>
         </div>
-
         <!-- Bootstrap core JavaScript
         ================================================== -->
         <script src="./js/jquery.min.js"></script>

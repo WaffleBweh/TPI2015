@@ -54,11 +54,46 @@
 }
 
 .carousel-indicators li{
-    border-radius: 0;
+    border-radius: 35%;
+    border-color: black;
 }
 
 .carousel-inner{
     max-height: 250px;
+}
+
+.panel{
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+
+.panel-footer{
+    width: 100%;
+}
+
+.thumbnail{
+    min-height: 170px;
+    max-height: 170px;
+    border: 1px #FFFFFF solid;
+}
+
+.carousel-inner .thumbnail{
+    min-height: 250px;
+    max-height: 250px;
+    border: 1px #FFFFFF solid;
+}
+
+#carousel-example-generic{
+    border: 1px #CCCCCC solid;
+}
+
+.img-thumbnail{
+    max-height: 200px;
+    border: none;
+    margin: auto;
+    padding-top: 50px;
 }
 
 .red{
@@ -71,6 +106,9 @@
 
 /* Quand on passe en mode mobile, on change les propriétés suivantes */
 @media (max-width: 767px) {
+    .col-md-4 {
+        width: 100%;
+    }
     .list-group{
         position: relative;
     }
@@ -81,5 +119,9 @@
 
     .col-xs-12 {
         width: 100%;
+    }
+
+    h1{
+        font-size: 28px;
     }
 }

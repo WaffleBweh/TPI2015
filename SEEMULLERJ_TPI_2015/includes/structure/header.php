@@ -7,7 +7,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="index.php">Catal'info</a>
+            <a class="navbar-brand" href="index.php"><span class="glyphicon glyphicon-home"></span> Catal'info</a>
         </div>
 
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
