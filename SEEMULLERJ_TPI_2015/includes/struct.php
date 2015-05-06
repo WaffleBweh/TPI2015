@@ -36,7 +36,7 @@ function structRecommendedProducts() {
 
 //On crée un panel pour chaque produits de la page
     foreach ($products as $product) {
-        $str.= '<div class="col-md-3">
+        $str.= '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="panel panel-success">
                         <div class="panel-heading">
                             <a href="detail.php?id=' . $product->idProduct . '"><h3 class="panel-title" style="text-align: center">' . $product->productTitle . '</h3></a>
@@ -69,7 +69,7 @@ function structMostViewedProducts() {
 
     //On crée un panel pour chaque produits de la page
     foreach ($products as $product) {
-        $str.= '<div class="col-md-3">
+        $str.= '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                     <div class="panel panel-success">
                         <div class="panel-heading">
                             <a href="detail.php?id=' . $product->idProduct . '"><h3 class="panel-title" style="text-align: center">' . $product->productTitle . '</h3></a>
@@ -204,7 +204,7 @@ function structDetailProduct($id) {
     $str = '<div class="row well">
                     <h1><span class="glyphicon glyphicon-search"></span> ' . strtoupper($product->brandName) . ' - ' . $product->title . '</h1>
                     <hr>
-                    <div class="col-sm-5">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-5">
                         <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                             <ol class="carousel-indicators">
                                 ' . $carouselIndicators . '
@@ -214,9 +214,8 @@ function structDetailProduct($id) {
                             </div>
                             ' . $carouselControls . '
                         </div>
-                    </div> 
-                    <hr/>
-                    <div class="col-sm-7">
+                    </div>                   
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-7">
                         <h4><i>' . $product->short_desc . '</i></h4>
                         <p>' . $product->long_desc . '</p> 
                             ' . $expiredText . '

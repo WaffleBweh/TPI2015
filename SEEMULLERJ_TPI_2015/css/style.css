@@ -49,10 +49,6 @@
     z-index: 1;
 }
 
-.col-xs-12 {
-    width: 225%;
-}
-
 .carousel-indicators li{
     border-radius: 35%;
     border-color: black;
@@ -104,11 +100,17 @@
     color: #23BA7E;
 }
 
+.search-bar{
+    width: 225%;
+}
+
+.form-container{
+    max-width: 700px;
+    margin: auto;
+}
+
 /* Quand on passe en mode mobile, on change les propriétés suivantes */
 @media (max-width: 767px) {
-    .col-md-4 {
-        width: 100%;
-    }
     .list-group{
         position: relative;
     }
@@ -116,12 +118,11 @@
     .mini-submenu{
         position: relative;
     }
-
-    .col-xs-12 {
+    .search-bar{
         width: 100%;
     }
-
+    
     h1{
-        font-size: 28px;
+        font-size: 25px;
     }
-}
+};

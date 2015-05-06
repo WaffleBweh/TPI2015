@@ -12,7 +12,7 @@
 
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
             <form class="navbar-form navbar-left">
-                <div class="input-group col-xs-12">
+                <div class="input-group col-xs-12 search-bar">
                     <input type="text" class="form-control" placeholder="Rechercher...">
                     <span class="input-group-btn">
                         <button class="btn btn-success" type="button"><span class="glyphicon glyphicon-search"></span></button>
@@ -31,7 +31,7 @@
                                 <?php echo $_SESSION["username"]; ?> <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un produit</a></li>
+                                <li><a href="addProduct.php"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un produit</a></li>
                                 <li><a href="logout.php"><span class="glyphicon glyphicon-log-out"></span> Se déconnecter</a></li>
                             </ul>
                         </div>

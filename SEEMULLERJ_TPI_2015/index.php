@@ -1,13 +1,20 @@
 <?php
 require_once 'includes/specific_funtions.php';
 require_once './includes/struct.php';
+$errorLogin = '';
 
 //Connexion utilisateur
 if (filter_input(INPUT_POST, 'login')) {
+
     $pseudo = filter_input(INPUT_POST, 'username');
     $pass = filter_input(INPUT_POST, 'password');
 
-    userConnect($pseudo, $pass);
+    if (!userConnect($pseudo, $pass)) {
+        $errorLogin = '<div class="alert alert-danger alert-error">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            Le nom d\'utilisateur ou le mot de passe est incorrect.
+                       </div>';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -22,9 +29,10 @@ if (filter_input(INPUT_POST, 'login')) {
         <link href="./css/style.css" rel="stylesheet">
         <link href="./css/font-awesome.css" rel="stylesheet">
     </head>
-    <body>
+    <body>      
         <!-- NAVBAR -->
         <?php
+        echo $errorLogin;
         getHeader();
         ?>
         <div class="left">
@@ -49,23 +57,26 @@ if (filter_input(INPUT_POST, 'login')) {
             <!-- CONTAINER -->
             <div class="container">
                 <!-- CONTAINER PANELS PRODUITS LES PLUS VUS-->
-                <div class="row well">
+                <div class="well">
                     <h1><span class="glyphicon glyphicon-fire"></span> Produits les plus vus</h1>
                     <hr/>
-                    <!--INSERTION DES PRODUITS LES PLUS VU-->
-                    <?php
-                    echo structMostViewedProducts();
-                    ?>
-
+                    <div class="row">
+                        <!--INSERTION DES PRODUITS LES PLUS VU-->
+                        <?php
+                        echo structMostViewedProducts();
+                        ?>
+                    </div>
                 </div>
                 <!-- CONTAINER PANELS PRODUITS LES RECOMMANDES -->
-                <div class="row well">
+                <div class="well">
                     <h1><span class="glyphicon glyphicon-tags"></span> Produits recommandés</h1>
                     <hr/>
-                    <!--INSERTION DES PRODUITS RECOMMENDES-->
-                    <?php
-                    echo structRecommendedProducts();
-                    ?>
+                    <div class="row">
+                        <!--INSERTION DES PRODUITS RECOMMENDES-->
+                        <?php
+                        echo structRecommendedProducts();
+                        ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,8 +91,8 @@ if (filter_input(INPUT_POST, 'login')) {
                             <h3 class="modal-title" id="myModalLabel">Connexion</h3>
                         </div>
                         <div class="modal-body">
-                            <label class="">Pseudo:</label><input class="form-control" name="username" type="text" value="" placeholder="ex : ''Johndoe''"/><br/>
-                            <label>Password :</label><input class="form-control" name="password" type="password"/><br/>
+                            <label class="">Pseudo:</label><input class="form-control" name="username" type="text" value="" required/><br/>
+                            <label>Password :</label><input class="form-control" name="password" type="password" required/><br/>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
