@@ -62,6 +62,40 @@ function getProductByIdCondition($id, $condition) {
     return getFieldByIdCondition($id, $tableProducts, $condition);
 }
 
+/** addProduct()
+ * Ajoute un produit à la base de données
+ * @global string $tableProducts
+ * @param type $title
+ * @param type $shortDesc
+ * @param type $longDesc
+ * @param type $isFrontpage
+ * @param type $startDate
+ * @param type $endDate
+ * @param type $idBrand
+ * @return type
+ */
+function addProduct($title, $shortDesc, $longDesc, $isFrontpage, $startDate, $endDate, $idBrand) {
+    global $tableProducts;
+    $viewCount = 0;
+
+    $dbc = connection();
+    $req = "INSERT INTO $tableProducts (title, short_desc, long_desc, is_frontpage, availability_date, expiration_date, view_count, id_brand) "
+            . "VALUES (:title, :shortDesc, :longDesc, :isFrontpage, :startDate, :endDate, :viewCount, :idBrand)";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->bindParam(':title', $title, PDO::PARAM_STR);
+    $requPrep->bindParam(':shortDesc', $shortDesc, PDO::PARAM_STR);
+    $requPrep->bindParam(':longDesc', $longDesc, PDO::PARAM_STR);
+    $requPrep->bindParam(':isFrontpage', $isFrontpage, PDO::PARAM_BOOL);
+    $requPrep->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+    $requPrep->bindParam(':endDate', $endDate, PDO::PARAM_STR);
+    $requPrep->bindParam(':viewCount', $viewCount, PDO::PARAM_INT);
+    $requPrep->bindParam(':idBrand', $idBrand, PDO::PARAM_INT);
+    $requPrep->execute();
+    $requPrep->closeCursor();
+    return $dbc->lastInsertId();
+}
+
 /** deleteProductById
  * Supprime un produit dans la base de donnée selon un id passé en parametre
  * @global string $tableProducts
@@ -238,3 +272,26 @@ function getProductMediasById($id) {
 
     return $data;
 }
+//
+//function addProductMediaRelation($arrayRelation){
+//    $table = "products_has_medias";
+//    
+//    $dbc = connection();
+//    $req = "INSERT INTO $table (id_products, id_medias) VALUES (:idProduct, :idMedia)";
+//
+//    $requPrep = $dbc->prepare($req); // on prépare notre requête
+//    
+//    foreach($arrayRelation as $relation){
+//        
+//    }
+//    
+//    $requPrep->bindParam(':source', $src, PDO::PARAM_STR);
+//    $requPrep->bindParam(':isImage', $isImage, PDO::PARAM_BOOL);
+//    $requPrep->execute();
+//    $requPrep->closeCursor();
+//    return $dbc->lastInsertId();
+//}
+//
+//function addProductKeywordRelation($arrayRelation){
+//    
+//}
