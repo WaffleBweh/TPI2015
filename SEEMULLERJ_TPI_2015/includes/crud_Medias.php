@@ -43,6 +43,7 @@ function addMedia($src, $isImage){
     global $tableMedias;
 
     $dbc = connection();
+    $dbc->quote($tableMedias);
     $req = "INSERT INTO $tableMedias (src, isImage) VALUES (:source, :isImage)";
 
     $requPrep = $dbc->prepare($req); // on prépare notre requête

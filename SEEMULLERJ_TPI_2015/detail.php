@@ -4,6 +4,11 @@ require_once './includes/struct.php';
 
 $id = filter_input(INPUT_GET, 'id');
 
+//Si le produit n'existe pas, on renvoie l'utilisateur à l'accueil
+if (getProductById($id) == NULL) {
+    header('Location: index.php');
+}
+
 //Connexion utilisateur
 if (filter_input(INPUT_POST, 'login')) {
     $pseudo = filter_input(INPUT_POST, 'username');
@@ -57,41 +62,41 @@ if (filter_input(INPUT_POST, 'login')) {
                 <?php
                 echo structDetailProduct($id);
                 ?>
-                    <h3>
-                        <?php
-                        echo structViewCount($id);
-                        ?>
-                    </h3>
-                </div>
+                <h3>
+                    <?php
+                    echo structViewCount($id);
+                    ?>
+                </h3>
             </div>
         </div>
+    </div>
 
-        <!-- Modal connexion -->
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <form class="form-signin" method="post" action="">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h3 class="modal-title" id="myModalLabel">Connexion</h3>
-                        </div>
-                        <div class="modal-body">
-                            <label class="">Pseudo:</label><input class="form-control" name="username" type="text" value="" placeholder="ex : ''Johndoe''"/><br/>
-                            <label>Password :</label><input class="form-control" name="password" type="password"/><br/>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
-                            <input name="login" class="btn btn-success" type="submit" value="Se connecter"/>
-                        </div>
-                    </form>
-                </div>
+    <!-- Modal connexion -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form class="form-signin" method="post" action="">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title" id="myModalLabel">Connexion</h3>
+                    </div>
+                    <div class="modal-body">
+                        <label class="">Pseudo:</label><input class="form-control" name="username" type="text" value="" placeholder="ex : ''Johndoe''"/><br/>
+                        <label>Password :</label><input class="form-control" name="password" type="password"/><br/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                        <input name="login" class="btn btn-success" type="submit" value="Se connecter"/>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <script src="./js/jquery.min.js"></script>
-        <script src="./js/bootstrap.min.js"></script>
-        <script src="js/dropdown.js"></script>
-    </body>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="js/dropdown.js"></script>
+</body>
 </html>

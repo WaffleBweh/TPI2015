@@ -272,26 +272,45 @@ function getProductMediasById($id) {
 
     return $data;
 }
-//
-//function addProductMediaRelation($arrayRelation){
-//    $table = "products_has_medias";
-//    
-//    $dbc = connection();
-//    $req = "INSERT INTO $table (id_products, id_medias) VALUES (:idProduct, :idMedia)";
-//
-//    $requPrep = $dbc->prepare($req); // on prépare notre requête
-//    
-//    foreach($arrayRelation as $relation){
-//        
-//    }
-//    
-//    $requPrep->bindParam(':source', $src, PDO::PARAM_STR);
-//    $requPrep->bindParam(':isImage', $isImage, PDO::PARAM_BOOL);
-//    $requPrep->execute();
-//    $requPrep->closeCursor();
-//    return $dbc->lastInsertId();
-//}
-//
-//function addProductKeywordRelation($arrayRelation){
-//    
-//}
+
+/** addProductMediaRelation
+ * Ajoute une relation entre un produit et un media
+ * @param type $idProduct
+ * @param type $idMedia
+ * @return type
+ */
+function addProductMediaRelation($idProduct, $idMedia) {
+    $table = "products_has_medias";
+
+    $dbc = connection();
+    $dbc->quote($table);
+    $req = "INSERT INTO $table (id_products, id_medias) VALUES (:idProduct, :idMedia)";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->bindParam(':idProduct', $idProduct, PDO::PARAM_STR);
+    $requPrep->bindParam(':idMedia', $idMedia, PDO::PARAM_BOOL);
+    $requPrep->execute();
+    $requPrep->closeCursor();
+    return $dbc->lastInsertId();
+}
+
+/** addProductKeywordRelation
+ * Ajoute une relation entre un produit et un mot-clef
+ * @param type $idProduct
+ * @param type $idKeyword
+ * @return type
+ */
+function addProductKeywordRelation($idProduct, $idKeyword) {
+    $table = "products_has_keywords";
+
+    $dbc = connection();
+    $dbc->quote($table);
+    $req = "INSERT INTO $table (id_products, id_keywords) VALUES (:idProduct, :idKeyword)";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->bindParam(':idProduct', $idProduct, PDO::PARAM_STR);
+    $requPrep->bindParam(':idKeyword', $idKeyword, PDO::PARAM_BOOL);
+    $requPrep->execute();
+    $requPrep->closeCursor();
+    return $dbc->lastInsertId();
+}

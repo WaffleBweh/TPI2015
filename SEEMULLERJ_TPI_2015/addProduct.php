@@ -25,44 +25,67 @@ $isRecommended = filter_input(INPUT_POST, 'isRecommended');
 //On récupère les informations des medias envoyés
 $uploadedFiles = $_FILES;
 
-debug($uploadedFiles);
+if ($isRecommended == "checked") {
+    $isRecommended = true;
+} else {
+    $isRecommended = false;
+}
 
-//Pour chaques médias ajoutés
-foreach ($uploadedFiles["medias"]["error"] as $key => $value) {
-    //Si l'upload n'a pas eu d'erreurs
-    if ($value == UPLOAD_ERR_OK) {
-        //Si le fichier existe
-        if (file_exists($uploadedFiles["medias"]["tmp_name"][$key])) {
-            //On vérifie que la taille de fichier n'exède pas la taille maximale
-            if (filesize($uploadedFiles["medias"]["tmp_name"][$key]) < MAX_FILE_SIZE) {
-                //On vérifie si le fichier fait parti des types d'images acceptée, sinon on le classe dans "autres"
-                if (checkImageType($uploadedFiles["medias"]["type"][$key])) {
-                     //On récupère la vielle extension du fichier
-                    $oldExtension = pathinfo($uploadedFiles["medias"]["name"][$key], PATHINFO_EXTENSION);
-                    //On crée un nom de fichier unique
-                    $filename = uniqid($_SESSION['id']) . '.' . $oldExtension;
-                    //On déplace le fichier et on le renomme avant de l'ajouter au dossier de destination
-                    move_uploaded_file($uploadedFiles["medias"]["tmp_name"][$key], IMG_FOLDER . $filename);
-                    //On indique que le fichier n'est pas une image
-                    $isImage = true;
-                }
-                else {
+//On ajoute les données du produit dans la base
+$idProduct = addProduct($title, $shortDesc, $longDesc, $isRecommended, $startDate, $endDate, $selectedBrand);
+
+//On ajoute la liason entre le produit et les keywords
+//Si on à envoyé un ou plus keyword
+if (count($selectedKeywords) > 0) {
+    debug($selectedKeywords);
+    foreach ($selectedKeywords as $selectedKeyword) {
+        addProductKeywordRelation($idProduct, $selectedKeyword);
+    }
+}
+
+//Si on à envoyé un ou plus media
+if (count($uploadedFiles) > 0) {
+    //Pour chaques médias ajoutés
+    foreach ($uploadedFiles["medias"]["error"] as $key => $value) {
+        //Si l'upload n'a pas eu d'erreurs
+        if ($value == UPLOAD_ERR_OK) {
+            //Si le fichier existe
+            if (file_exists($uploadedFiles["medias"]["tmp_name"][$key])) {
+                //On vérifie que la taille de fichier n'exède pas la taille maximale
+                if (filesize($uploadedFiles["medias"]["tmp_name"] [$key]) < MAX_FILE_SIZE) {
                     //On récupère la vielle extension du fichier
                     $oldExtension = pathinfo($uploadedFiles["medias"]["name"][$key], PATHINFO_EXTENSION);
+                    //On récupère l'ancien nom du fichier
+                    $oldFilename = pathinfo($uploadedFiles["medias"]["name"][$key], PATHINFO_FILENAME);
                     //On crée un nom de fichier unique
-                    $filename = uniqid($_SESSION['id']) . '.' . $oldExtension;
+                    $hash = uniqid($_SESSION ['id']) . '.' . $oldExtension;
+                    //On coupe le vieux nom du fichier pour le limiter à 10 caractères
+                    if (strlen($oldFilename) > 10) {
+                        $oldFilename = substr($oldFilename, 0, 10);
+                    }
+                    //On vérifie si le fichier fait parti des types d'images acceptée, sinon on le classe dans "autres"
+                    if (checkImageType($uploadedFiles["medias"]["type"][$key])) {
+                        //Si le fichier est bien une image, on l'ajoute dans le dossier "images"
+                        $filename = IMG_FOLDER . $oldFilename . $hash;
+                        //On indique que le fichier n'est pas une image
+                        $isImage = true;
+                    } else {
+                        //Si le fichier n'est pas une image, on l'ajoute dans le dossier "autres"
+                        $filename = OTHER_FOLDER . $oldFilename . $hash;
+                        //On indique que le fichier n'est pas une image
+                        $isImage = false;
+                    }
                     //On déplace le fichier et on le renomme avant de l'ajouter au dossier de destination
-                    move_uploaded_file($uploadedFiles["medias"]["tmp_name"][$key], OTHER_FOLDER . $filename);
-                    //On indique que le fichier n'est pas une image
-                    $isImage = false;
+                    move_uploaded_file($uploadedFiles["medias"]["tmp_name"][$key], $filename);
+                    //On ajoute les donnée des media et sa relation avec le produit dans la base
+                    $idMedia = addMedia($filename, $isImage);
+                    addProductMediaRelation($idProduct, $idMedia);
                 }
-                //On ajoute les données dans la base
-                $idProduct = addProduct($title, $shortDesc, $longDesc, $isRecommended, $startDate, $endDate, $selectedBrand);
-                $idMedia = addMedia($srcMedia, $isImage);
             }
         }
     }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en"><head>
@@ -122,7 +145,7 @@ foreach ($uploadedFiles["medias"]["error"] as $key => $value) {
                             <hr/>
                             <div class="container-fluid">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <input class="" name="medias[]" type="file" multiple required/>
+                                    <input class="" name="medias[]" type="file" accept=".png,.gif,.jpg,.jpeg,.pdf,.docx" multiple required/>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" hidden="true">
                                     <input name="upload" class="btn btn-primary" type="submit" value="Upload">

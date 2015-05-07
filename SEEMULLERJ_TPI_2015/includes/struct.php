@@ -174,7 +174,7 @@ function structDetailProduct($id) {
     if (isset($arrayOthers)) {
         foreach ($arrayOthers as $other) {
             //On crée le nom du fichier en soustrayant la longeur de l'arborescance au chemin complet
-            $filename = substr($other, strlen(CONTENT_UPLOAD . OTHER_FOLDER));
+            $filename = substr($other, strlen(OTHER_FOLDER));
             $otherMedia .= '<li class="media">
                                 <div class="media-left">
                                     <a href="#">
