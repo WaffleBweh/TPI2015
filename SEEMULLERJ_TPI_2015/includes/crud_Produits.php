@@ -103,7 +103,56 @@ function addProduct($title, $shortDesc, $longDesc, $isFrontpage, $startDate, $en
  */
 function deleteProductById($id) {
     global $tableProducts;
+    //On supprime les medias lié au produit
+    deleteProductMediasById($id);
+    //On supprime la relation avec les medias
+    deleteProductMediaRelation($id);
+    //On supprime la relation avec les keywords
+    deleteProductKeywordRelation($id);
+    //On supprime le produit
     deleteFieldById($id, $tableProducts);
+}
+
+/** deleteProductMediaRelation
+ * On supprime la relation avec les medias grace à l'id produit
+ * @param type $id
+ */
+function deleteProductMediaRelation($id) {
+    $table = 'products_has_medias';
+    $condition = "WHERE id_products = $id";
+    deleteFieldByIdCondition($id, $table, $condition);
+}
+
+/** deleteProductKeywordRelation
+ * On supprime la relation avec les keywords grace à l'id produit
+ * @param type $id
+ */
+function deleteProductKeywordRelation($id) {
+    $table = 'products_has_keywords';
+    $condition = "WHERE id_products = $id";
+    deleteFieldByIdCondition($id, $table, $condition);
+}
+
+/** deleteProductMediasById
+ * On supprime les medias du produit grace a son id
+ * @param type $id
+ */
+function deleteProductMediasById($id) {
+    $dbc = connection();
+    $table = 'medias';
+    $dbc->quote($table);
+
+    $req = "DELETE FROM $table "
+            . "WHERE id IN ("
+            . "SELECT pm.id_medias "
+            . "FROM products_has_medias "
+            . "AS pm "
+            . "WHERE pm.id_products = $id)";
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
 }
 
 /** getRecommendedProducts
@@ -225,6 +274,24 @@ function getProductDetailsById($id) {
     return $data;
 }
 
+function getProductKeywordsById($id) {
+    global $tableProducts;
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    $req = 'SELECT p.title, k.id AS idKeyword, k.name AS keywordName '
+            . 'FROM products AS p '
+            . 'INNER JOIN products_has_keywords AS pk ON p.id = pk.id_products '
+            . 'INNER JOIN keywords AS k ON pk.id_keywords = k.id '
+            . 'WHERE p.id = 2';
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
+}
+
 /** getProductMedias
  * Renvoie la liste de tous les produits avec leurs médias associés
  * @global string $tableProducts
@@ -310,6 +377,19 @@ function addProductKeywordRelation($idProduct, $idKeyword) {
     $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->bindParam(':idProduct', $idProduct, PDO::PARAM_STR);
     $requPrep->bindParam(':idKeyword', $idKeyword, PDO::PARAM_BOOL);
+    $requPrep->execute();
+    $requPrep->closeCursor();
+    return $dbc->lastInsertId();
+}
+
+function addViewById($id) {
+    global $tableProducts;
+
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    $dbc->quote($id);
+    $req = "UPDATE $tableProducts SET view_count = view_count+1 WHERE id = $id";
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->execute();
     $requPrep->closeCursor();
     return $dbc->lastInsertId();

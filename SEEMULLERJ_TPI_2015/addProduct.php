@@ -9,8 +9,45 @@ if (!isAdmin()) {
     header('Location: index.php');
 }
 
+//On récupère les marques et les mot-clefs
 $brands = getBrandsSorted();
 $keywords = getAllKeywordsSorted();
+
+//On récupère l'id du produit et on regarde si on est en mode edition
+$editMode = filter_input(INPUT_GET, 'edit');
+$id = filter_input(INPUT_GET, 'id');
+
+//Si on modifie un produit
+if ($editMode == 1) {
+    //On recupère le produit
+    $product = getProductDetailsById($id);
+    $productKeywords = getProductKeywordsById($id);
+    //On initialise les variables pour remplir les champs
+    $txtMode = '<span class="glyphicon glyphicon-cog"></span> Modifier un produit';
+    $txtTitle = $product->title;
+    $txtShortDesc = $product->short_desc;
+    $txtLongDesc = $product->long_desc;
+    $txtKeywords = '';
+    $txtStartDate = $product->availability_date;
+    $txtEndDate = $product->expiration_date;
+    //On change le formattage pour qu'il soit compatible avec la checkbox
+    if ($product->is_frontpage) {
+        $txtIsRecommended = 'checked';
+    } else {
+        $txtIsRecommended = '';
+    }
+} else {
+    //Si on est en train d'ajouter un produit
+    //On initialise les variables
+    $txtMode = '<span class="glyphicon glyphicon-plus-sign"></span> Ajouter un produit';
+    $txtTitle = '';
+    $txtShortDesc = '';
+    $txtLongDesc = '';
+    $txtKeywords = '';
+    $txtStartDate = '';
+    $txtEndDate = '';
+    $txtIsRecommended = '';
+}
 
 // On récupère les informations du formulaire
 $title = filter_input(INPUT_POST, 'title');
@@ -28,6 +65,8 @@ $uploadedFiles = $_FILES;
 
 $error = false;
 $errorList = '';
+
+//Si on à recu des données en post
 if (!empty($_POST)) {
 //Verification ddu titre du produit
     if (empty($title) || strlen($title) > "64") {
@@ -164,8 +203,8 @@ if (!empty($errorMessages)) {
                 <!-- CONTAINER LOGIN -->
                 <div class="form-horizontal">
                     <form class="form-add-product" enctype="multipart/form-data" method="post" action="">
-                        <h2><span class="glyphicon glyphicon-plus-sign"></span> Ajouter un produit</h2><hr/>
-                        <label class="">Nom du produit :</label><input class="form-control" name="title" type="text" value="" required/><br/>
+                        <h2><?php echo $txtMode; ?></h2><hr/>
+                        <label class="">Nom du produit :</label><input class="form-control" name="title" type="text" value="<?php echo $txtTitle; ?>" required/><br/>
 
                         <label class="">Marque :</label>
                         <select class="form-control" name="brands" required>
@@ -177,21 +216,25 @@ if (!empty($errorMessages)) {
                         </select>
                         <br/>
 
-                        <label class="">Description courte :</label><input class="form-control" name="short_desc" type="text" value="" required/><br/>
-                        <label class="">Description longue :</label><textarea class="form-control" name="long_desc" rows="3" required></textarea><br/>
+                        <label class="">Description courte :</label><input class="form-control" name="short_desc" type="text" value="<?php echo $txtShortDesc; ?>" required/><br/>
+                        <label class="">Description longue :</label><textarea class="form-control" name="long_desc" rows="3" required><?php echo $txtLongDesc; ?></textarea><br/>
 
                         <label class="">Mots-celfs</label>
                         <select class="form-control" name="keywords[]" multiple required>
                             <?php
-                            foreach ($keywords as $keyword) {
-                                echo '<option value="' . $keyword->id . '">' . strtoupper($keyword->name) . '</option>';
+                            foreach ($keywords as $key => $keyword) {
+                                if (in_array($keyword->id, array_column($productKeywords->idKeyword,'idKeywords'))) {
+                                    echo '<option value="' . $keyword->id . '" selected>' . strtoupper($keyword->name) . '</option>';
+                                } else {
+                                    echo '<option value="' . $keyword->id . '">' . strtoupper($keyword->name) . '</option>';
+                                }
                             }
                             ?>
                         </select>
                         <br/>
 
-                        <label class="">Date de sortie :</label><input class="form-control" name="availability_date" type="date" value="" required/><br/>
-                        <label class="">Date d'expiration :</label><input class="form-control" name="expiration_date" type="date" value="" required/><br/>
+                        <label class="">Date de sortie :</label><input class="form-control" name="availability_date" type="date" value="<?php echo $txtStartDate; ?>" required/><br/>
+                        <label class="">Date d'expiration :</label><input class="form-control" name="expiration_date" type="date" value="<?php echo $txtEndDate; ?>" required/><br/>
                         <div class="well">
 
                             <label class="">Medias du produit :</label>           
@@ -211,7 +254,7 @@ if (!empty($errorMessages)) {
                             <hr/>
                         </div>
                         <label>
-                            <input type="checkbox" value="checked" name="isRecommended">
+                            <input type="checkbox" value="checked" name="isRecommended" <?php echo $txtIsRecommended ?>>
                             En première page
                         </label>
                         <br/>

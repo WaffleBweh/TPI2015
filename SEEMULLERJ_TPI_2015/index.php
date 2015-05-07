@@ -2,6 +2,7 @@
 require_once 'includes/specific_funtions.php';
 require_once './includes/struct.php';
 $errorLogin = '';
+$deleteSuccess = '';
 
 //Connexion utilisateur
 if (filter_input(INPUT_POST, 'login')) {
@@ -15,6 +16,14 @@ if (filter_input(INPUT_POST, 'login')) {
                             Le nom d\'utilisateur ou le mot de passe est incorrect.
                        </div>';
     }
+}
+
+//Si on viens de supprimer un fichier, on affiche un alert
+if (filter_input(INPUT_GET, 'deleteSuccess') == true) {
+    $deleteSuccess = '<div class="alert alert-success">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            Le produit ä été supprimé avec succès.
+                       </div>';
 }
 ?>
 <!DOCTYPE html>
@@ -32,6 +41,7 @@ if (filter_input(INPUT_POST, 'login')) {
     <body>      
         <!-- NAVBAR -->
         <?php
+        echo $deleteSuccess;
         echo $errorLogin;
         getHeader();
         ?>

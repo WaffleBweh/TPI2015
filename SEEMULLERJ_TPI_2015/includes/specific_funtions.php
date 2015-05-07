@@ -17,7 +17,18 @@ require_once 'crud_User.php';
  * @return type
  */
 function isAdmin() {
-    return ($_SESSION['admin']);
+    if (isset($_SESSION['admin'])) {
+        if ($_SESSION['admin'] == 1) {
+            $result = true;
+        } 
+        else {
+            $result = false;
+        }
+    } 
+    else {
+        $result = false;
+    }
+    return ($result);
 }
 
 /** isConnected

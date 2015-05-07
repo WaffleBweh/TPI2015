@@ -2,14 +2,19 @@
 require_once 'includes/specific_funtions.php';
 require_once './includes/struct.php';
 
+//On initialise les variables
+$adminControls = '';
+$errorLogin = '';
+$deleteSuccess = '';
 $id = filter_input(INPUT_GET, 'id');
 
+
 //Si le produit n'existe pas, on renvoie l'utilisateur à l'accueil
-if (getProductById($id) == NULL) {
+$product = getProductById($id);
+if ($product == NULL) {
     header('Location: index.php');
 }
 
-$errorLogin = '';
 //Connexion utilisateur
 if (filter_input(INPUT_POST, 'login')) {
     $pseudo = filter_input(INPUT_POST, 'username');
@@ -21,6 +26,25 @@ if (filter_input(INPUT_POST, 'login')) {
                             Le nom d\'utilisateur ou le mot de passe est incorrect.
                        </div>';
     }
+}
+
+//On ajoute une vue à la page
+addViewById($id);
+
+//Si l'utilisateur est un administrateur on lui affiche les controles du produit
+if (isAdmin()) {
+    $adminControls = '<a href="addProduct.php?edit=1&id=' . $id . '" class="btn btn-warning">
+                        <span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Modifier le produit
+                    </a>
+                    <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal">
+                            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> Supprimer le produit
+                    </button>
+                    <hr/>';
+}
+
+if ((isAdmin()) && (filter_input(INPUT_POST, 'delete'))) {
+    deleteProductById($id);
+    header('Location: index.php?deleteSuccess=true');
 }
 ?>
 <!DOCTYPE html>
@@ -39,6 +63,7 @@ if (filter_input(INPUT_POST, 'login')) {
         <!-- NAVBAR -->
         <?php
         echo $errorLogin;
+        echo $deleteSuccess;
         getHeader();
         ?>
         <div class="left">
@@ -64,6 +89,9 @@ if (filter_input(INPUT_POST, 'login')) {
 
         <!-- CONTAINER -->
         <div class="container">
+            <?php
+            echo $adminControls
+            ?>
             <div class="container-fluid">
                 <!-- CONTAINER PANELS PRODUITS LES PLUS VUS-->
                 <?php
@@ -79,7 +107,7 @@ if (filter_input(INPUT_POST, 'login')) {
     </div>
 
     <!-- Modal connexion -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <form class="form-signin" method="post" action="">
@@ -94,6 +122,27 @@ if (filter_input(INPUT_POST, 'login')) {
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
                         <input name="login" class="btn btn-success" type="submit" value="Se connecter"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal suppression -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" action="">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h3 class="modal-title" id="myModalLabel">Suppression</h3>
+                    </div>
+                    <div class="modal-body">
+                        <p>Êtes vous sur de vouloir supprimer le produit suivant : "<?php echo $product->title ?>" ?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                        <input name="delete" class="btn btn-danger" type="submit" value="Supprimer"/>
                     </div>
                 </form>
             </div>

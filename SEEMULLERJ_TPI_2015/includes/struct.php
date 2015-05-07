@@ -124,7 +124,7 @@ function structDetailProduct($id) {
     $otherMedia = '';
     $i = 0;
     $j = 0;
-
+    
     foreach ($medias as $media) {
         if ($media->isImage) {
             $i++;
@@ -182,7 +182,7 @@ function structDetailProduct($id) {
                                     </a>
                                 </div>
                                 <div class="media-body" style="margin: 10px;">
-                                    <h4 class="media-heading" id="media-heading"><a href="#">' . $filename . '</a><a class="anchorjs-link" href="#media-heading"><span class="anchorjs-icon"></span></a></h4>
+                                    <h4 class="media-heading" id="media-heading"><a href="download.php?file='. $other .'">' . $filename . '</a><a class="anchorjs-link" href="#media-heading"><span class="anchorjs-icon"></span></a></h4>
                                 </div>
                             </li>';
         }
