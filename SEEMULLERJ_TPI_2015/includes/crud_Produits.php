@@ -314,3 +314,19 @@ function addProductKeywordRelation($idProduct, $idKeyword) {
     $requPrep->closeCursor();
     return $dbc->lastInsertId();
 }
+
+/* SEARCH FOR PRODUCT
+SELECT p.title AS productName, p.short_desc, p.long_desc, b.name AS brandName
+FROM products AS p
+INNER JOIN brands AS b ON p.id_brand = b.id
+WHERE Concat(p.title, '', p.short_desc, '', p.long_desc, '', b.name) 
+LIKE "%Razer%"
+ */
+
+/* SEARCH FOR PRODUCT VIA KEYWORD
+SELECT p.title AS productName, p.short_desc, p.long_desc, k.name
+FROM products AS p
+INNER JOIN products_has_keywords AS pk ON p.id = pk.id_products
+INNER JOIN keywords AS k ON pk.id_keywords = k.id
+WHERE k.name LIKE "%Carte%"
+ */

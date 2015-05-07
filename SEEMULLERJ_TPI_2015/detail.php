@@ -9,12 +9,18 @@ if (getProductById($id) == NULL) {
     header('Location: index.php');
 }
 
+$errorLogin = '';
 //Connexion utilisateur
 if (filter_input(INPUT_POST, 'login')) {
     $pseudo = filter_input(INPUT_POST, 'username');
     $pass = filter_input(INPUT_POST, 'password');
 
-    userConnect($pseudo, $pass);
+    if (!userConnect($pseudo, $pass)) {
+        $errorLogin = '<div class="alert alert-danger alert-error">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            Le nom d\'utilisateur ou le mot de passe est incorrect.
+                       </div>';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -32,6 +38,7 @@ if (filter_input(INPUT_POST, 'login')) {
     <body>
         <!-- NAVBAR -->
         <?php
+        echo $errorLogin;
         getHeader();
         ?>
         <div class="left">
