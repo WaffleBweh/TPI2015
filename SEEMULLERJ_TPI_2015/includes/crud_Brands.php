@@ -50,7 +50,7 @@ function getBrandsSorted() {
  * @param type $id
  * @return type
  */
-function getBrandById($id) {
+function getBrandById($id, $type = PDO::FETCH_OBJ) {
     global $tableBrands;
-    return getFieldById($id, $tableBrands);
+    return getFieldById($id, $tableBrands, $type);
 }

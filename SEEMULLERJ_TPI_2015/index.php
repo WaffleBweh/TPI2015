@@ -3,6 +3,8 @@ require_once 'includes/specific_funtions.php';
 require_once './includes/struct.php';
 $errorLogin = '';
 $deleteSuccess = '';
+$addSuccess = '';
+$editSuccess = '';
 
 //Connexion utilisateur
 if (filter_input(INPUT_POST, 'login')) {
@@ -18,12 +20,30 @@ if (filter_input(INPUT_POST, 'login')) {
     }
 }
 
-//Si on viens de supprimer un fichier, on affiche un alert
+//Si on vient de supprimer un produit, on affiche un alert
 if (filter_input(INPUT_GET, 'deleteSuccess') == true) {
     $deleteSuccess = '<div class="alert alert-success">
                             <a href="#" class="close" data-dismiss="alert">&times;</a>
-                            Le produit ä été supprimé avec succès.
+                            Le produit à été supprimé avec succès.
                        </div>';
+}
+
+if (isAdmin()) {
+//Si on vient d'ajouter un produit, on affiche un alert
+    if (filter_input(INPUT_GET, 'addSuccess') == true) {
+        $addSuccess = '<div class="alert alert-success">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            Le produit à été ajouté avec succès.
+                       </div>';
+    }
+
+//Si on vient de modifier un produit, on affiche un alert
+    if (filter_input(INPUT_GET, 'editSuccess') == true) {
+        $editSuccess = '<div class="alert alert-success">
+                            <a href="#" class="close" data-dismiss="alert">&times;</a>
+                            Le produit à été modifié avec succès.
+                       </div>';
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -41,6 +61,8 @@ if (filter_input(INPUT_GET, 'deleteSuccess') == true) {
     <body>      
         <!-- NAVBAR -->
         <?php
+        echo $addSuccess;
+        echo $editSuccess;
         echo $deleteSuccess;
         echo $errorLogin;
         getHeader();

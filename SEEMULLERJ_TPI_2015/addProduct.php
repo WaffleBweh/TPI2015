@@ -8,7 +8,6 @@ require_once 'includes/crud_Medias.php';
 if (!isAdmin()) {
     header('Location: index.php');
 }
-
 //On récupère les marques et les mot-clefs
 $brands = getBrandsSorted();
 $keywords = getAllKeywordsSorted();
@@ -17,11 +16,16 @@ $keywords = getAllKeywordsSorted();
 $editMode = filter_input(INPUT_GET, 'edit');
 $id = filter_input(INPUT_GET, 'id');
 
+$addedProduct = false;
+$addedMedia = false;
+
 //Si on modifie un produit
 if ($editMode == 1) {
     //On recupère le produit
     $product = getProductDetailsById($id);
-    $productKeywords = getProductKeywordsById($id);
+    $productKeywords = getProductKeywordsById($id, PDO::FETCH_ASSOC);
+    $productBrand = $product->id_brand;
+    $productMedias = getProductMediasById($id);
     //On initialise les variables pour remplir les champs
     $txtMode = '<span class="glyphicon glyphicon-cog"></span> Modifier un produit';
     $txtTitle = $product->title;
@@ -30,6 +34,7 @@ if ($editMode == 1) {
     $txtKeywords = '';
     $txtStartDate = $product->availability_date;
     $txtEndDate = $product->expiration_date;
+    $viewCount = $product->view_count;
     //On change le formattage pour qu'il soit compatible avec la checkbox
     if ($product->is_frontpage) {
         $txtIsRecommended = 'checked';
@@ -62,9 +67,7 @@ $isRecommended = filter_input(INPUT_POST, 'isRecommended');
 //On récupère les informations des medias envoyés
 $uploadedFiles = $_FILES;
 
-
 $error = false;
-$errorList = '';
 
 //Si on à recu des données en post
 if (!empty($_POST)) {
@@ -107,62 +110,67 @@ if (!empty($_POST)) {
     } else {
         $isRecommended = false;
     }
-}
 
 //On ajoute les données du produit dans la base si il n'y a pas d'erreurs et si on à envoyé des données
-if ($error == false) {
-    $idProduct = addProduct($title, $shortDesc, $longDesc, $isRecommended, $startDate, $endDate, $selectedBrand);
-
-
-    //On ajoute la liason entre le produit et les keywords si il n'y a pas d'erreurs
-    //Si on à envoyé un ou plus keyword
-    if (count($selectedKeywords) > 0) {
-        foreach ($selectedKeywords as $selectedKeyword) {
-            addProductKeywordRelation($idProduct, $selectedKeyword);
-        }
-    }
-
-    //Si on à envoyé un ou plus media
-    if (count($uploadedFiles) > 0) {
-        //Pour chaques médias ajoutés
-        foreach ($uploadedFiles["medias"]["error"] as $key => $value) {
-            //Si l'upload n'a pas eu d'erreurs
-            if ($value == UPLOAD_ERR_OK) {
-                //Si le fichier existe
-                if (file_exists($uploadedFiles["medias"]["tmp_name"][$key])) {
-                    //On vérifie que la taille de fichier n'exède pas la taille maximale
-                    if (filesize($uploadedFiles["medias"]["tmp_name"] [$key]) < MAX_FILE_SIZE) {
-                        //On récupère la vielle extension du fichier
-                        $oldExtension = pathinfo($uploadedFiles["medias"]["name"][$key], PATHINFO_EXTENSION);
-                        //On récupère l'ancien nom du fichier
-                        $oldFilename = pathinfo($uploadedFiles["medias"]["name"][$key], PATHINFO_FILENAME);
-                        //On crée un nom de fichier unique
-                        $hash = uniqid($_SESSION ['id']) . '.' . $oldExtension;
-                        //On coupe le vieux nom du fichier pour le limiter à 10 caractères
-                        if (strlen($oldFilename) > 10) {
-                            $oldFilename = substr($oldFilename, 0, 10);
-                        }
-                        //On vérifie si le fichier fait parti des types d'images acceptée, sinon on le classe dans "autres"
-                        if (checkImageType($uploadedFiles["medias"]["type"][$key])) {
-                            //Si le fichier est bien une image, on l'ajoute dans le dossier "images"
-                            $filename = IMG_FOLDER . $oldFilename . $hash;
-                            //On indique que le fichier n'est pas une image
-                            $isImage = true;
-                        } else {
-                            //Si le fichier n'est pas une image, on l'ajoute dans le dossier "autres"
-                            $filename = OTHER_FOLDER . $oldFilename . $hash;
-                            //On indique que le fichier n'est pas une image
-                            $isImage = false;
-                        }
-                        //On déplace le fichier et on le renomme avant de l'ajouter au dossier de destination
-                        move_uploaded_file($uploadedFiles["medias"]["tmp_name"][$key], $filename);
-                        //On ajoute les donnée des media et sa relation avec le produit dans la base
-                        $idMedia = addMedia($filename, $isImage);
-                        addProductMediaRelation($idProduct, $idMedia);
-                        $errorList = '<div class="alert alert-success alert-error">
+    if ($error == false) {
+        if ($editMode == 1) {
+            $idProduct = updateProduct($id, $title, $shortDesc, $longDesc, $isRecommended, $startDate, $endDate, $viewCount, $selectedBrand);
+            $errorList = '<div class="alert alert-success alert-error">
                             <a href="#" class="close" data-dismiss="alert">&times;</a>
-                            Le produit #' . $idProduct . ' à été ajouté correctement
+                            Le produit #' . $idProduct . ' à été mis à jour correctement
                        </div>';
+        } else {
+            $idProduct = addProduct($title, $shortDesc, $longDesc, $isRecommended, $startDate, $endDate, $selectedBrand);
+        }
+        $addedProduct = true;
+
+        //On ajoute la liason entre le produit et les keywords si il n'y a pas d'erreurs
+        //Si on à envoyé un ou plus keyword
+        if (count($selectedKeywords) > 0) {
+            foreach ($selectedKeywords as $selectedKeyword) {
+                addProductKeywordRelation($idProduct, $selectedKeyword);
+            }
+        }
+
+        //Si on à envoyé un ou plus media
+        if (count($uploadedFiles) > 0) {
+            //Pour chaques médias ajoutés
+            foreach ($uploadedFiles["medias"]["error"] as $key => $value) {
+                //Si l'upload n'a pas eu d'erreurs
+                if ($value == UPLOAD_ERR_OK) {
+                    //Si le fichier existe
+                    if (file_exists($uploadedFiles["medias"]["tmp_name"][$key])) {
+                        //On vérifie que la taille de fichier n'exède pas la taille maximale
+                        if (filesize($uploadedFiles["medias"]["tmp_name"] [$key]) < MAX_FILE_SIZE) {
+                            //On récupère la vielle extension du fichier
+                            $oldExtension = pathinfo($uploadedFiles["medias"]["name"][$key], PATHINFO_EXTENSION);
+                            //On récupère l'ancien nom du fichier
+                            $oldFilename = pathinfo($uploadedFiles["medias"]["name"][$key], PATHINFO_FILENAME);
+                            //On crée un nom de fichier unique
+                            $hash = uniqid($_SESSION ['id']) . '.' . $oldExtension;
+                            //On coupe le vieux nom du fichier pour le limiter à 10 caractères
+                            if (strlen($oldFilename) > 10) {
+                                $oldFilename = substr($oldFilename, 0, 10);
+                            }
+                            //On vérifie si le fichier fait parti des types d'images acceptée, sinon on le classe dans "autres"
+                            if (checkImageType($uploadedFiles["medias"]["type"][$key])) {
+                                //Si le fichier est bien une image, on l'ajoute dans le dossier "images"
+                                $filename = IMG_FOLDER . $oldFilename . $hash;
+                                //On indique que le fichier n'est pas une image
+                                $isImage = true;
+                            } else {
+                                //Si le fichier n'est pas une image, on l'ajoute dans le dossier "autres"
+                                $filename = OTHER_FOLDER . $oldFilename . $hash;
+                                //On indique que le fichier n'est pas une image
+                                $isImage = false;
+                            }
+                            //On déplace le fichier et on le renomme avant de l'ajouter au dossier de destination
+                            move_uploaded_file($uploadedFiles["medias"]["tmp_name"][$key], $filename);
+                            //On ajoute les donnée des media et sa relation avec le produit dans la base
+                            $idMedia = addMedia($filename, $isImage);
+                            addProductMediaRelation($idProduct, $idMedia);
+                            $addedMedia = true;
+                        }
                     }
                 }
             }
@@ -175,6 +183,15 @@ if (!empty($errorMessages)) {
                             <a href="#" class="close" data-dismiss="alert">&times;</a>
                             ' . $errorMessage . '
                        </div>';
+    }
+}
+
+//Si on à ajouté un produit ou un media, on redirige la personne vers l'acceuil
+if (($addedMedia) || ($addedProduct)) {
+    if ($editMode == 1) {
+        header('Location: index.php?editSuccess=true');
+    } else {
+        header('Location: index.php?addSuccess=true');
     }
 }
 ?>
@@ -193,7 +210,6 @@ if (!empty($errorMessages)) {
     <body>
         <!-- NAVBAR -->
         <?php
-        echo $errorList;
         getHeader();
         ?>
 
@@ -209,8 +225,13 @@ if (!empty($errorMessages)) {
                         <label class="">Marque :</label>
                         <select class="form-control" name="brands" required>
                             <?php
+                            //On compare les IDs des marques du produit avec ceux de la liste, on selectionne ceux du produit
                             foreach ($brands as $brand) {
-                                echo '<option value="' . $brand->id . '">' . $brand->name . '</option>';
+                                if ($brand->id == $productBrand) {
+                                    echo '<option selected value="' . $brand->id . '">' . $brand->name . '</option>';
+                                } else {
+                                    echo '<option value="' . $brand->id . '">' . $brand->name . '</option>';
+                                }
                             }
                             ?>
                         </select>
@@ -219,11 +240,13 @@ if (!empty($errorMessages)) {
                         <label class="">Description courte :</label><input class="form-control" name="short_desc" type="text" value="<?php echo $txtShortDesc; ?>" required/><br/>
                         <label class="">Description longue :</label><textarea class="form-control" name="long_desc" rows="3" required><?php echo $txtLongDesc; ?></textarea><br/>
 
-                        <label class="">Mots-celfs</label>
-                        <select class="form-control" name="keywords[]" multiple required>
+                        <label class="">Mots-celfs :</label>
+                        <select class="form-control keyword-container" name="keywords[]" multiple required>
                             <?php
-                            foreach ($keywords as $key => $keyword) {
-                                if (in_array($keyword->id, array_column($productKeywords->idKeyword,'idKeywords'))) {
+                            //On compare les IDs des keywords du produit avec ceux de la liste, on selectionne ceux du produit
+                            $idProductKeywords = array_column($productKeywords, "idKeyword");
+                            foreach ($keywords as $keyword) {
+                                if (in_array($keyword->id, $idProductKeywords)) {
                                     echo '<option value="' . $keyword->id . '" selected>' . strtoupper($keyword->name) . '</option>';
                                 } else {
                                     echo '<option value="' . $keyword->id . '">' . strtoupper($keyword->name) . '</option>';
@@ -236,12 +259,24 @@ if (!empty($errorMessages)) {
                         <label class="">Date de sortie :</label><input class="form-control" name="availability_date" type="date" value="<?php echo $txtStartDate; ?>" required/><br/>
                         <label class="">Date d'expiration :</label><input class="form-control" name="expiration_date" type="date" value="<?php echo $txtEndDate; ?>" required/><br/>
                         <div class="well">
-
-                            <label class="">Medias du produit :</label>           
+                            <?php
+                            if ($editMode == 1) {
+                                echo '<label class="">Ajouter des medias :</label>';
+                            } else {
+                                echo '<label class="">Medias du produit :</label>';
+                            }
+                            ?>
                             <hr/>
                             <div class="container-fluid">
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <input class="" name="medias[]" type="file" accept=".png,.gif,.jpg,.jpeg,.pdf,.docx" multiple required/>
+                                    <?php
+                                    //Si on modifie le produit, ajouter un media n'est pas obligatoire
+                                    if ($editMode == 1) {
+                                        echo '<input class="" name="medias[]" type="file" accept=".png,.gif,.jpg,.jpeg,.pdf,.docx" multiple/>';
+                                    } else {
+                                        echo '<input class="" name="medias[]" type="file" accept=".png,.gif,.jpg,.jpeg,.pdf,.docx" multiple required/>';
+                                    }
+                                    ?>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" hidden="true">
                                     <input name="upload" class="btn btn-primary" type="submit" value="Upload">
@@ -252,6 +287,47 @@ if (!empty($errorMessages)) {
                                 <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
                             </div>
                             <hr/>
+                            <div class="media">
+                                <ul class="media-list">
+                                    <?php
+                                    if ($editMode == 1) {
+                                        echo "<label>Gestion des medias :</label>";
+                                        //Pour chaque medias, on vérifie si le il est une image, et on l'ajoute accordement
+                                        foreach ($productMedias as $productMedia) {
+                                            $idMedia = $productMedia->idMedia;
+                                            if ($productMedia->isImage) {
+                                                $mediaName = substr($productMedia->mediaSource, strlen(IMG_FOLDER));
+                                                echo '<li class="media">
+                                                    <div class="media-left">
+                                                        <a href="#">
+                                                            <img class="media-object" alt="pdf_file" src="' . $productMedia->mediaSource . '" data-holder-rendered="true" style="width: 64px; height: 64px;">
+                                                        </a>
+                                                    </div>
+                                                    <div class="media-body" style="margin: 10px;">
+                                                        <h4 class="media-heading">' . $mediaName . '</h4>
+                                                        <a href="delete.php?idMedia=' . $idMedia . '&idProduct=' . $id . '" class="btn btn-danger">Supprimer le media</a>
+                                                    </div>
+                                                </li>';
+                                            } else {
+                                                $mediaName = substr($productMedia->mediaSource, strlen(OTHER_FOLDER));
+                                                echo '<li class="media">
+                                                    <div class="media-left">
+                                                        <a href="#">
+                                                            <img class="media-object" alt="pdf_file" src="img/pdf.png" data-holder-rendered="true" style="width: 64px; height: 64px;">
+                                                        </a>
+                                                    </div>
+                                                    <div class="media-body" style="margin: 10px;">
+                                                        <h4 class="media-heading">' . $mediaName . '</h4>
+                                                        <a href="delete.php?idMedia=' . $idMedia . '&idProduct=' . $id . '" class="btn btn-danger">Supprimer le media</a>
+                                                    </div>
+                                                </li>';
+                                            }
+                                        }
+                                    }
+                                    ?>
+
+                                </ul>
+                            </div>
                         </div>
                         <label>
                             <input type="checkbox" value="checked" name="isRecommended" <?php echo $txtIsRecommended ?>>
@@ -259,7 +335,13 @@ if (!empty($errorMessages)) {
                         </label>
                         <br/>
                         <br/>
-                        <input name="submit" class="btn btn-success" type="submit" value="Ajouter le produit"/>
+                        <?php
+                        if ($editMode == 1) {
+                            echo '<input name="submit" class="btn btn-success" type="submit" value="Modifier le produit"/>';
+                        } else {
+                            echo '<input name="submit" class="btn btn-success" type="submit" value="Ajouter le produit"/>';
+                        }
+                        ?>
                     </form>
                 </div>
             </div>

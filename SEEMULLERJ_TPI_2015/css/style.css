@@ -26,6 +26,10 @@
     background-color: black;
 }
 
+select[multiple], select[size] {
+    height: 200px;
+}
+
 #slide-submenu{
     display: inline-block;
     padding: 0 8px;

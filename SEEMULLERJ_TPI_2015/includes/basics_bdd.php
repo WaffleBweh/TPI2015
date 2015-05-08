@@ -79,7 +79,7 @@ function countFieldsCondition($table, $condition) {
  * @param String $table
  * @return PDO::FETCH_OBJ
  */
-function getFieldById($id, $table) {
+function getFieldById($id, $table, $type = PDO::FETCH_OBJ) {
     $dbc = connection();
     $dbc->quote($table);
     $req = "SELECT * FROM $table WHERE id=:id";
@@ -88,7 +88,7 @@ function getFieldById($id, $table) {
     $requPrep->bindParam(':id', $id, PDO::PARAM_INT);
     $requPrep->execute();
 
-    return $requPrep->fetch(PDO::FETCH_OBJ);
+    return $requPrep->fetch($type);
 }
 
 /** getFieldByIdCondition
