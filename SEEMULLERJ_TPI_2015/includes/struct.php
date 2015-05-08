@@ -11,6 +11,7 @@
 require_once 'specific_funtions.php';
 require_once 'crud_Produits.php';
 require_once 'crud_Keywords.php';
+require_once 'crud_Medias.php';
 
 /** getHeader
  * Affiche différents headers en fonction de la personne qui est connectée
@@ -99,11 +100,63 @@ function structKeywordsList() {
     $keywords = getAllKeywordsSorted();
     $str = '';
 
-//On crée un panel pour chaque animaux de la page
+    //On affiche un lien pour chaque keywords de la base
     foreach ($keywords as $keyword) {
-        $str.= '<a href="#" class="list-group-item">
+        $str.= '<a href="search.php?querryKW=' . $keyword->name . '" class="list-group-item">
                         ' . strtoupper($keyword->name) . '
                     </a>';
+    }
+
+    return $str;
+}
+
+function structSearchedProducts($querry) {
+    $products = searchForProduct($querry);
+    $str = '';
+    $querry = str_replace(' ', '%', $querry);
+    foreach ($products as $product) {
+        $str .= '<li class="media">
+                    <div class="media-left">
+                        <img class="media-object" src="' . $product->mediaSource . '" alt="image_product">
+                    </div>
+                    <div class="media-body">
+                        <a href="detail.php?id=' . $product->idProduct . '"><h4 class="media-heading"><b>' . $product->brandName . '</b> - ' . $product->productTitle . '</h4></a>
+                        <i>' . $product->short_desc . '</i>
+                        <p></p>
+                    </div>
+                </li>
+                <hr/>';
+    }
+
+    return $str;
+}
+
+function structSearchedProductsKeywords($querry) {
+    $products = searchForProductWithKeywords($querry);
+    $str = '';
+
+    foreach ($products as $product) {
+        //On récupère la première image du produit
+        $medias = getProductMediasById($product->idProduct);
+        $imgProduct = '';
+        foreach ($medias as $media) {
+            if ($media->isImage) {
+                $imgProduct[] = $media->mediaSource;
+            }
+        }
+
+        //On crée une liste html contenant les medias et les informations du produit
+        $str .= '<li class="media">
+                    <div class="media-left">
+                        <img class="media-object" src="' . $imgProduct[0] . '" alt="image_product">
+                    </div>
+                    <div class="media-body">
+                        <a href="detail.php?id=' . $product->idProduct . '"><h4 class="media-heading"><b>' . $product->brandName . '</b> - ' . $product->productTitle . '</h4></a>
+                        <i>' . $product->short_desc . '</i>
+                        <p></p>
+                    </div>
+                </li>
+                <hr/>';
     }
 
     return $str;
@@ -182,14 +235,14 @@ function structDetailProduct($id) {
                                     </a>
                                 </div>
                                 <div class="media-body" style="margin: 10px;">
-                                    <h4 class="media-heading" id="media-heading"><a href="download.php?file='. $other .'">' . $filename . '</a><a class="anchorjs-link" href="#media-heading"><span class="anchorjs-icon"></span></a></h4>
+                                    <h4 class="media-heading" id="media-heading"><a href="download.php?file=' . $other . '">' . $filename . '</a><a class="anchorjs-link" href="#media-heading"><span class="anchorjs-icon"></span></a></h4>
                                 </div>
                             </li>';
         }
     } else {
         $arrayOthers = NULL;
     }
-    
+
     if (is_null($arrayOthers)) {
         $otherMedia = '<h4 class="red"><span class="glyphicon glyphicon-remove-sign"></span><i> Pas de fichiers actuellement disponible pour ce produit</i></h4>';
     }

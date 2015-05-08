@@ -11,11 +11,11 @@
         </div>
 
         <div id="navbar" class="navbar-collapse collapse" aria-expanded="false" style="height: 1px;">
-            <form class="navbar-form navbar-left">
+            <form class="navbar-form navbar-left" method="get" action="search.php">
                 <div class="input-group col-xs-12 search-bar">
-                    <input type="text" class="form-control" placeholder="Rechercher...">
+                    <input name="querry" type="text" class="form-control" placeholder="Rechercher...">
                     <span class="input-group-btn">
-                        <button class="btn btn-success" type="button"><span class="glyphicon glyphicon-search"></span></button>
+                        <button class="btn btn-success" type="submit"><span class="glyphicon glyphicon-search"></span></button>
                     </span>
                 </div>
             </form>

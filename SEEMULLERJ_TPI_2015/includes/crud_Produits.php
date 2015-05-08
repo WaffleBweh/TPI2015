@@ -96,12 +96,12 @@ function addProduct($title, $shortDesc, $longDesc, $isFrontpage, $startDate, $en
     return $dbc->lastInsertId();
 }
 
-function updateProduct($id, $title, $shortDesc, $longDesc, $isFrontpage, $startDate, $endDate, $viewCount, $idBrand){
+function updateProduct($id, $title, $shortDesc, $longDesc, $isFrontpage, $startDate, $endDate, $viewCount, $idBrand) {
     global $tableProducts;
     $dbc = connection();
     $dbc->quote($tableProducts);
     $req = "UPDATE $tableProducts SET title=:title, short_desc=:shortDesc, long_desc=:longDesc, is_frontpage=:isFrontpage, availability_date=:startDate, expiration_date=:endDate, view_count=:viewCount, id_brand=:idBrand WHERE id=$id";
-    
+
     $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->bindParam(':title', $title, PDO::PARAM_STR);
     $requPrep->bindParam(':shortDesc', $shortDesc, PDO::PARAM_STR);
@@ -183,7 +183,7 @@ function deleteProductMediaById($idProduct, $idMedia) {
     $requPrep->execute();
     $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
-    
+
     deleteProductMediaRelationById($idProduct, $idMedia);
 }
 
@@ -197,7 +197,7 @@ function deleteProductMediasById($id) {
     foreach ($medias as $media) {
         unlink($media->mediaSource);
     }
-    
+
     $dbc = connection();
     $table = 'medias';
     $dbc->quote($table);
@@ -213,7 +213,6 @@ function deleteProductMediasById($id) {
     $requPrep->execute();
     $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
-    
 }
 
 /** getRecommendedProducts
@@ -454,6 +453,52 @@ function addViewById($id) {
     $requPrep->execute();
     $requPrep->closeCursor();
     return $dbc->lastInsertId();
+}
+
+function searchForProduct($querry) {
+    global $tableProducts;
+
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    $req = 'SELECT DISTINCT p.id AS idProduct, p.title as productTitle,  p.short_desc, MIN(m.src) AS mediaSource,'
+            . ' m.isImage, p.view_count, p.is_frontpage, b.name AS brandName '
+            . 'FROM ' . $tableProducts . ' AS p '
+            . 'INNER JOIN products_has_medias AS pm ON p.id = pm.id_products '
+            . 'INNER JOIN medias AS m ON pm.id_medias = m.id '
+            . 'INNER JOIN brands AS b ON p.id_brand = b.id '
+            . 'WHERE Concat(p.title, \'\', p.short_desc, \'\', p.long_desc, \'\', b.name) LIKE "%' . $querry . '%" '
+            . 'AND m.isImage = 1 GROUP BY p.title ORDER BY p.title DESC';
+
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
+}
+
+function searchForProductWithKeywords($querry) {
+    global $tableProducts;
+    $querry = str_replace('%20', ' ', $querry);
+    $dbc = connection();
+    $dbc->quote($tableProducts);
+    $req = 'SELECT DISTINCT p.id AS idProduct, p.title as productTitle, '
+            . 'p.short_desc, p.view_count, p.is_frontpage, b.name AS brandName, '
+            . 'k.name AS keywordName '
+            . 'FROM ' . $tableProducts . ' AS p '
+            . 'INNER JOIN brands AS b ON p.id_brand = b.id '
+            . 'INNER JOIN products_has_keywords AS pk ON p.id = pk.id_products '
+            . 'INNER JOIN keywords AS k ON pk.id_keywords = k.id '
+            . 'WHERE k.name LIKE "%' . $querry . '%" '
+            . 'GROUP BY p.title '
+            . 'ORDER BY p.title DESC';
+    
+    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep->execute();
+    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
+    $requPrep->closeCursor();
+
+    return $data;
 }
 
 /* SEARCH FOR PRODUCT
