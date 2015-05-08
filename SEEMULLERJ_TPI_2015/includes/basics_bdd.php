@@ -1,18 +1,22 @@
 <?php
 
 /*
-  ======Basic Bdd=======
-  Auteur: 	Seemuller Julien
-  Classe: 	I.IN-P4B
-  Date:		30/04/2015
-  Version:	1.0
-  Description:    Script contenant les fonctions basiques relative à la base de donnée
-  - connexion base de donnée (PDO)
-  - retourne le nombre d'enregistrement dans la table donnée
-  - retourne un enregistrement par rapport à l'id
-  - retourne tout les enregistrements d'une table donnée
-  - retourne un nombre défini d'enregistrements pour la pagination
-  - supprime un enregistrement de la table donnée par rapport à l'id
++---------------+----------------------------------------------------------------------+
+|  BASICS BDD   |                                                                      |
++---------------+----------------------------------------------------------------------+
+| Auteur :      | SEEMULLER Julien                                                     |
+| Classe :      | I.IN-P4B                                                             |
+| Date :        | 08.05.2015                                                           |
+| Version :     | 1.0                                                                  |
+|               |                                                                      |
+| Description : | Script contenant les fonctions basiques relative à la base de donnée |
+|               | -> Connexion base de donnée (PDO)                                    |
+|               | -> Retourne le nombre d'enregistrement dans la table donnée          |
+|               | -> Retourne un enregistrement par rapport à l'id                     |
+|               | -> Retourne tout les enregistrements d'une table donnée              |
+|               | -> Retourne un nombre défini d'enregistrements pour la pagination    |
+|               | -> Supprime un enregistrement de la table donnée par rapport à l'id  |
++---------------+----------------------------------------------------------------------+
  */
 
 require_once 'constantes.php';

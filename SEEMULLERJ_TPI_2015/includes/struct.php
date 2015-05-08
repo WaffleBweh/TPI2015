@@ -1,12 +1,15 @@
 <?php
-
 /*
-  ======Structure PHP======
-  Auteur: 	Seemuller Julien
-  Classe: 	I.IN-P4B
-  Date:		30.04.2015
-  Version:	1.0
-  Description:  Script permettant de définir quel élément du site web a utiliser dépendamment de l'utilisateur
++---------------+---------------------------------------------------+
+| STRUCTURE PHP |                                                   |
++---------------+---------------------------------------------------+
+| Auteur :      | SEEMULLER Julien                                  |
+| Classe :      | I.IN-P4B                                          |
+| Date :        | 08.05.2015                                        |
+| Version :     | 1.0                                               |
+| Description : | Script permettant de définir quel élément du site |
+|               | web a utiliser dépendamment de l'utilisateur      |
++---------------+---------------------------------------------------+
  */
 require_once 'specific_funtions.php';
 require_once 'crud_Produits.php';
@@ -18,13 +21,6 @@ require_once 'crud_Medias.php';
  */
 function getHeader() {
     include 'structure/header.php';
-}
-
-/** getFooter
- * Affiche différents footers en fonction de la personne qui est connectée
- */
-function getFooter() {
-    
 }
 
 /** structRecommendedProducts
@@ -95,6 +91,7 @@ function structMostViewedProducts() {
 
 /** structKeywordsList
  * Renvoie un string contenant le code html pour afficher la liste des catégories
+ * @return string
  */
 function structKeywordsList() {
     $keywords = getAllKeywordsSorted();
@@ -110,6 +107,11 @@ function structKeywordsList() {
     return $str;
 }
 
+/** structSearchedProducts
+ * Structure la page de recherches multicritères
+ * @param type $querry
+ * @return string
+ */
 function structSearchedProducts($querry) {
     $products = searchForProduct($querry);
     $str = '';
@@ -131,6 +133,11 @@ function structSearchedProducts($querry) {
     return $str;
 }
 
+/**
+ * Structure la page de recherche par mot-clefs
+ * @param type $querry
+ * @return string
+ */
 function structSearchedProductsKeywords($querry) {
     $products = searchForProductWithKeywords($querry);
     $str = '';

@@ -1,13 +1,17 @@
 <?php
 
 /*
-  ======Crud Produit=======
-  Auteur: 	Seemuller Julien
-  Classe: 	I.IN-P4B
-  Date:		25/11/2014
-  Version:	1
-  Description:    Script contenant les fonctions en relation avec le crud products
-  (create, read, update, delete)
++---------------+---------------------------------------------+
+| CRUD PRODUITS |                                             |
++---------------+---------------------------------------------+
+| Auteur :      | SEEMULLER Julien                            |
+| Classe :      | I.IN-P4B                                    |
+| Date :        | 08.05.2015                                  |
+| Version :     | 1.0                                         |
+| Description : | Script contenant les fonctions              |
+|               | en relation l'identification et le          |
+|               | crud produits(CREATE, READ, UPDATE, DELETE) |
++---------------+---------------------------------------------+
  */
 
 require_once 'basics_bdd.php';

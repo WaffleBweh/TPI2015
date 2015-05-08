@@ -1,12 +1,16 @@
 <?php
 
 /*
-  ======Constantes======
-  Auteur: 	Seemuller Julien
-  Classe: 	I.IN-P4B
-  Date:		30/04/2014
-  Version:	1.1
-  Description:  Script regroupant les constantes necessaire pour les scripts php du site
++---------------+-----------------------------------------------+
+|  CONSTANTES   |                                               |
++---------------+-----------------------------------------------+
+| Auteur :      | SEEMULLER Julien                              |
+| Classe :      | I.IN-P4B                                      |
+| Date :        | 08.05.2015                                    |
+| Version :     | 1.0                                           |
+| Description : | Script regroupant les constantes necessaires  |
+|               | aux scripts php du site                       |
++---------------+-----------------------------------------------+
  */
 
 DEFINE('DB_LOGIN', 'root');

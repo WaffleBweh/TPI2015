@@ -1,3 +1,17 @@
+<!-- 
++---------------+--------------------------------------+
+|    HEADER     |                                      |
++---------------+--------------------------------------+
+| Auteur :      | SEEMULLER Julien                     |
+| Classe :      | I.IN-P4B                             |
+| Date :        | 08.05.2015                           |
+| Version :     | 1.0                                  |
+|               |                                      |
+| Description : | Fichier contenant du code HTML pour  |
+|               | l'en-tête du site en fonction de     |
+|               | l'utilisateur connecté               |
++---------------+--------------------------------------+
+-->
 <nav class="navbar navbar-default navbar-static-top" role="navigation">
     <div class="container">
         <div class="navbar-header">

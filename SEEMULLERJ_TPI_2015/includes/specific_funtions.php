@@ -1,12 +1,16 @@
 <?php
 
 /*
-  ======Specific functions======
-  Auteur: 	Seemuller Julien
-  Classe: 	I.IN-P4B
-  Date:		30/04/2015
-  Version:	0.1
-  Description:  Script regroupant les fonctions spécifiques au site web et la base de donnée
++--------------------+----------------------------------------------+
+| SPECIFIC FUNCTIONS |                                              |
++--------------------+----------------------------------------------+
+| Auteur :           | SEEMULLER Julien                             |
+| Classe :           | I.IN-P4B                                     |
+| Date :             | 08.05.2015                                   |
+| Version :          | 1.0                                          |
+| Description :      | Script regroupant les fonctions spécifiques  |
+|                    | au site web et la base de données            |
++--------------------+----------------------------------------------+
  */
 
 session_start();

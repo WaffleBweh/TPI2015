@@ -1,12 +1,16 @@
 <?php
 /*
-======Crud utilisateur=======
-Auteur: 	Seemuller Julien
-Classe: 	I.IN-P4B
-Date:		30/04/2015
-Version:	1.0
-Description:    Script contenant les fonctions en relation avec le 
-                l'identification et le crud user (create, read, update, delete)
++------------------+------------------------------------------+
+| CRUD UTILISATEUR |                                          |
++------------------+------------------------------------------+
+| Auteur :         | SEEMULLER Julien                         |
+| Classe :         | I.IN-P4B                                 |
+| Date :           | 08.05.2015                               |
+| Version :        | 1.0                                      |
+| Description :    | Script contenant les fonctions           |
+|                  | en relation l'identification et le       |
+|                  | crud user (CREATE, READ, UPDATE, DELETE) |
++------------------+------------------------------------------+
 */
 
 require_once 'basics_bdd.php';
