@@ -15,6 +15,11 @@
 
 require_once 'basics_bdd.php';
 
+/** getUserByPseudo
+ * Recupère les informations de l'utilisateur grâce à son pseudo
+ * @param type $pseudo
+ * @return type
+ */
 function getUserByPseudo($pseudo) {
     $dbc = connection();
     $req = "SELECT * FROM users WHERE username=:pseudo";
@@ -27,6 +32,12 @@ function getUserByPseudo($pseudo) {
     return $data;
 }
 
+/** userConnect
+ * Connecte l'utilisateur et initialise la session
+ * @param type $username
+ * @param type $password
+ * @return boolean
+ */
 function userConnect($username, $password) {
     $connect = false;
     $_SESSION['username']= $username;

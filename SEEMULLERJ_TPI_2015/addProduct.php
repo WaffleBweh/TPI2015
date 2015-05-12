@@ -240,7 +240,7 @@ if (($addedMedia) || ($addedProduct)) {
                         <label class="">Description courte :</label><input class="form-control" name="short_desc" type="text" value="<?php echo $txtShortDesc; ?>" required/><br/>
                         <label class="">Description longue :</label><textarea class="form-control" name="long_desc" rows="3" required><?php echo $txtLongDesc; ?></textarea><br/>
 
-                        <label class="">Mots-celfs :</label>
+                        <label class="">Mots-clefs :</label>
                         <select class="form-control keyword-container" name="keywords[]" multiple required>
                             <?php
                             //On compare les IDs des keywords du produit avec ceux de la liste, on selectionne ceux du produit
