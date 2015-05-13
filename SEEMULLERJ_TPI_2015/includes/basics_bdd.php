@@ -25,6 +25,9 @@ require_once 'constantes.php';
  * @return PDO
  */
 function connection() {
+    // On essaie de se connecter à la base à l'aide d'informations contenues
+    // dans des constantes, si cela échoue, on renvoie FALSE et si on s'est bien
+    // connecté à la base de donnée, on renvoie TRUE
     try {
         $bdd = new PDO('mysql:host=' . DB_HOST . ';dbname=' . DB_NAME, DB_LOGIN, DB_PASS, array(PDO::ATTR_PERSISTENT => true));
 
@@ -44,11 +47,14 @@ function connection() {
 function countFields($table) {
     $dbc = connection();
     $dbc->quote($table);
+    //On compte tous les champs de la table donnée en paramètre
     $req = "SELECT COUNT(*) FROM $table";
-
+    
+    //On prépare la requete
     $requPrep = $dbc->prepare($req);
     $requPrep->execute();
-
+    
+    //On récupère le nombre de champs dans un array
     $number = $requPrep->fetch();
     $requPrep->closeCursor();
     return $number[0];
@@ -65,11 +71,15 @@ function countFieldsCondition($table, $condition) {
     $dbc = connection();
     $dbc->quote($table);
     $dbc->quote($condition);
+    //On compte tous les champs de la table donnée en paramètre
+    //et on ajoute une condition
     $req = "SELECT COUNT(*) FROM $table $condition";
-
+    
+    //On prépare la requete
     $requPrep = $dbc->prepare($req);
     $requPrep->execute();
-
+    
+    //On récupère le nombre de champs dans un array
     $number = $requPrep->fetch();
     $requPrep->closeCursor();
     return $number[0];
@@ -85,12 +95,13 @@ function countFieldsCondition($table, $condition) {
 function getFieldById($id, $table, $type = PDO::FETCH_OBJ) {
     $dbc = connection();
     $dbc->quote($table);
+    //On récupère le champ avec l'id correspondant à celui envoyé en paramètre
     $req = "SELECT * FROM $table WHERE id=:id";
-    // preparation de la requete
+    //On prépare la requete
     $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->bindParam(':id', $id, PDO::PARAM_INT);
     $requPrep->execute();
-
+    //On renvoie le résultat dans format spécifique, (Par défaut : objet)
     return $requPrep->fetch($type);
 }
 
@@ -104,11 +115,14 @@ function getFieldById($id, $table, $type = PDO::FETCH_OBJ) {
 function getFieldByIdCondition($id, $table, $condition) {
     $dbc = connection();
     $dbc->quote($table);
+    //On récupère le champ avec l'id correspondant à celui envoyé en paramètre
+    //et on ajoute une condition
     $req = "SELECT * FROM $table WHERE id=:id $condition";
+    //On prépare la requete
     $requPrep = $dbc->prepare($req);
     $requPrep->bindParam(':id', $id, PDO::PARAM_INT);
     $requPrep->execute();
-
+    //On renvoie un objet contenant le résultat
     return $requPrep->fetch(PDO::FETCH_OBJ);
 }
 
@@ -120,12 +134,14 @@ function getFieldByIdCondition($id, $table, $condition) {
 function getAllFields($table) {
     $dbc = connection();
     $dbc->quote($table);
+    //On récupère tous les champs de la table donnée en paramètre
     $req = "SELECT * FROM $table";
-
+    //On prépare la requete
     $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->execute();
     $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
+    //On renvoie un tableau d'objets contenant les données
     return $data;
 }
 
@@ -139,12 +155,16 @@ function getAllFieldsCondition($table, $condition) {
     $dbc = connection();
     $dbc->quote($table);
     $dbc->quote($condition);
+    //On récupère tous les champs de la table donnée en paramètre
+    //et on ajoute une condition
     $req = "SELECT * FROM $table $condition";
-
+    
+    //On prépare la requete
     $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->execute();
     $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
+    //On renvoie un tableau d'objets contenant les données
     return $data;
 }
 
@@ -157,12 +177,13 @@ function getAllFieldsCondition($table, $condition) {
 function deleteFieldById($id, $table) {
     $dbc = connection();
     $dbc->quote($table);
+    //On supprime le champ correspondant à l'id passé en paramètre
+    //dans la table passé en paramètre
     $req = "DELETE FROM $table WHERE id=:id";
 
     $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->bindParam(':id', $id, PDO::PARAM_INT);
     $requPrep->execute();
-    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
 }
 
@@ -176,11 +197,12 @@ function deleteFieldById($id, $table) {
 function deleteFieldByIdCondition($id, $table, $condition) {
     $dbc = connection();
     $dbc->quote($table);
+    //On supprime le champ correspondant à l'id passé en paramètre
+    //dans la table passé en paramètre et on ajoute une condition
     $req = "DELETE FROM $table $condition";
 
     $requPrep = $dbc->prepare($req); // on prépare notre requête
     $requPrep->bindParam(':id', $id, PDO::PARAM_INT);
     $requPrep->execute();
-    $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
 }

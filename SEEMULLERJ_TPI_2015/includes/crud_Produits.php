@@ -100,6 +100,21 @@ function addProduct($title, $shortDesc, $longDesc, $isFrontpage, $startDate, $en
     return $dbc->lastInsertId();
 }
 
+/** updateProduct
+ * On met a jour un produit grâce a son id.
+ * Il est nécéssaire de remplir tous les paramètres de la fonction.
+ * @global string $tableProducts
+ * @param type $id
+ * @param type $title
+ * @param type $shortDesc
+ * @param type $longDesc
+ * @param type $isFrontpage
+ * @param type $startDate
+ * @param type $endDate
+ * @param type $viewCount
+ * @param type $idBrand
+ * @return type
+ */
 function updateProduct($id, $title, $shortDesc, $longDesc, $isFrontpage, $startDate, $endDate, $viewCount, $idBrand) {
     global $tableProducts;
     $dbc = connection();
@@ -338,6 +353,13 @@ function getProductDetailsById($id) {
     return $data;
 }
 
+/** getProductKeywordsById
+ * On récupère les mots-clefs du produit grâce à l'id du produit
+ * @global string $tableProducts
+ * @param type $id
+ * @param type $type
+ * @return type
+ */
 function getProductKeywordsById($id, $type = PDO::FETCH_OBJ) {
     global $tableProducts;
     $dbc = connection();
@@ -446,6 +468,12 @@ function addProductKeywordRelation($idProduct, $idKeyword) {
     return $dbc->lastInsertId();
 }
 
+/** addViewById
+ * On ajoute une vue au produit possèdant un id identique à celui passé en paramètre
+ * @global string $tableProducts
+ * @param type $id
+ * @return type
+ */
 function addViewById($id) {
     global $tableProducts;
 
@@ -459,6 +487,13 @@ function addViewById($id) {
     return $dbc->lastInsertId();
 }
 
+/** searchForProduct
+ * Renvoie la liste des produits issu d'une recherche multicriteres
+ * passée en paramètre
+ * @global string $tableProducts
+ * @param type $querry
+ * @return type
+ */
 function searchForProduct($querry) {
     global $tableProducts;
 
@@ -481,6 +516,12 @@ function searchForProduct($querry) {
     return $data;
 }
 
+/** searchForProductWithKeywords
+ * Renvoie la liste des produits possèdant le mot-clé passé en paramètre
+ * @global string $tableProducts
+ * @param type $querry
+ * @return type
+ */
 function searchForProductWithKeywords($querry) {
     global $tableProducts;
     $dbc = connection();
@@ -503,6 +544,10 @@ function searchForProductWithKeywords($querry) {
 
     return $data;
 }
+
+/***********************************/
+/* REQUETES POUR RECHERCHE PRODUIT */
+/***********************************/
 
 /* SEARCH FOR PRODUCT
 SELECT p.title AS productName, p.short_desc, p.long_desc, b.name AS brandName

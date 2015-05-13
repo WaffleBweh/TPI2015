@@ -43,6 +43,14 @@ function getMediaById($id) {
     return getFieldById($id, $tableMedias);
 }
 
+/** addMedia
+ * On ajoute un média dans la table medias à l'aide d'une source
+ * et du champ isImage passé en paramètre
+ * @global string $tableMedias
+ * @param type $src
+ * @param type $isImage
+ * @return type
+ */
 function addMedia($src, $isImage){
     global $tableMedias;
 

@@ -28,6 +28,11 @@ function getAllKeywords(){
     return getAllFields($tableKeywords);
 }
 
+/** getAllKeywordsSorted
+ * Renvoie le contenu de la table "keywords" trié par ordre alphabetique
+ * @global string $tableKeywords
+ * @return type
+ */
 function getAllKeywordsSorted(){    
     global $tableKeywords;
     $condition = 'ORDER BY name';
