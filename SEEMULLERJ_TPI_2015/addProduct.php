@@ -38,7 +38,8 @@ if ($editMode == 1) {
     //On change le formattage pour qu'il soit compatible avec la checkbox
     if ($product->is_frontpage) {
         $txtIsRecommended = 'checked';
-    } else {
+    } 
+    else {
         $txtIsRecommended = '';
     }
 } else {
