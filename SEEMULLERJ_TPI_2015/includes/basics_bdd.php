@@ -14,7 +14,6 @@
 |               | -> Retourne le nombre d'enregistrement dans la table donnée          |
 |               | -> Retourne un enregistrement par rapport à l'id                     |
 |               | -> Retourne tout les enregistrements d'une table donnée              |
-|               | -> Retourne un nombre défini d'enregistrements pour la pagination    |
 |               | -> Supprime un enregistrement de la table donnée par rapport à l'id  |
 +---------------+----------------------------------------------------------------------+
  */
@@ -106,8 +105,7 @@ function getFieldByIdCondition($id, $table, $condition) {
     $dbc = connection();
     $dbc->quote($table);
     $req = "SELECT * FROM $table WHERE id=:id $condition";
-    // preparation de la requete
-    $requPrep = $dbc->prepare($req); // on prépare notre requête
+    $requPrep = $dbc->prepare($req);
     $requPrep->bindParam(':id', $id, PDO::PARAM_INT);
     $requPrep->execute();
 
@@ -148,54 +146,6 @@ function getAllFieldsCondition($table, $condition) {
     $data = $requPrep->fetchAll(PDO::FETCH_OBJ);
     $requPrep->closeCursor();
     return $data;
-}
-
-/** getPaginationQuerry
- * Retourne la liste des enregistrement d'une page donnée en paramètre selon la 
- * requette egalement passée en parametre 
- * @param Integer $page
- * @param Integer $nbRow
- * @param String $table
- * @return PDO::FETCH_OBJ
- */
-function getPaginationQuerry($page = 0, $nbRow = 0, $query) {
-    $dbc = connection();
-    $offset = $page * $nbRow;
-
-    $req = $query . " LIMIT :offset , :max "; //Ajout de la limite pour la pagination
-    // preparation de la requete
-    $requPrep = $dbc->prepare($req); // on prépare notre requête
-    $requPrep->bindParam(':offset', $offset, PDO::PARAM_INT);
-    $requPrep->bindParam(':max', $nbRow, PDO::PARAM_INT);
-
-    $requPrep->execute();
-    $clients = $requPrep->fetchAll(PDO::FETCH_OBJ);
-    $requPrep->closeCursor();
-    return $clients;
-}
-
-/** getFieldsPagination
- * Retourne la liste des enregistrement d'une page donnée en paramètre selon la 
- * table egalement passée en parametre 
- * @param Integer $page
- * @param Integer $nbRow
- * @param String $table
- * @return PDO::FETCH_OBJ
- */
-function getFieldsPagination($page = 0, $nbRow = 0, $table) {
-    $dbc = connection();
-    $dbc->quote($table);
-    $offset = $page * $nbRow;
-
-    $req = "SELECT * FROM $table LIMIT :offset , :max "; //Ajout de la limite pour la pagination
-    // preparation de la requete
-    $requPrep = $dbc->prepare($req); // on prépare notre requête
-    $requPrep->bindParam(':offset', $offset, PDO::PARAM_INT);
-    $requPrep->bindParam(':max', $nbRow, PDO::PARAM_INT);
-    $requPrep->execute();
-    $clients = $requPrep->fetchAll(PDO::FETCH_OBJ);
-    $requPrep->closeCursor();
-    return $clients;
 }
 
 /** deleteFieldById
