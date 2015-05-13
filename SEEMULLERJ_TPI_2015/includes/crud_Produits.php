@@ -483,7 +483,6 @@ function searchForProduct($querry) {
 
 function searchForProductWithKeywords($querry) {
     global $tableProducts;
-    $querry = str_replace('%20', ' ', $querry);
     $dbc = connection();
     $dbc->quote($tableProducts);
     $req = 'SELECT DISTINCT p.id AS idProduct, p.title as productTitle, '
